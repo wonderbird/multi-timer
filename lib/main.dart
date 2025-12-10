@@ -29,9 +29,14 @@ class TimerScreen extends StatefulWidget {
   State<TimerScreen> createState() => _TimerScreenState();
 }
 
+// ...existing code...
 class _TimerScreenState extends State<TimerScreen> {
   bool _isCounting = false;
   final AudioPlayer _player = AudioPlayer();
+  
+  // Define wait durations for each cycle (in seconds)
+  // Here: 5 min, 1 min, 5 min, 1 min, 5 min, 2 min, 1 min
+  final List<int> _waitDurations = [300, 60, 300, 60, 300, 120, 60];
 
   @override
   void dispose() {
@@ -44,17 +49,27 @@ class _TimerScreenState extends State<TimerScreen> {
       _isCounting = true;
     });
 
-    // Wait for 5 seconds
-    await Future.delayed(const Duration(seconds: 5));
+    for (int duration in _waitDurations) {
+      // Wait for the specified duration
+      await Future.delayed(Duration(seconds: duration));
 
-    // Play sound
-    await _player.play(AssetSource('gong.mp3'));
+      // Create a completer to wait for audio completion
+      final completer = Completer<void>();
+      
+      // Listen for when the audio finishes playing
+      final subscription = _player.onPlayerComplete.listen((_) {
+        completer.complete();
+      });
 
-    // Wait for 3 seconds while sound plays
-    await Future.delayed(const Duration(seconds: 3));
+      // Play sound
+      await _player.play(AssetSource('gong.mp3'));
 
-    // Stop sound
-    await _player.stop();
+      // Wait for the sound to finish playing
+      await completer.future;
+
+      // Clean up the subscription
+      await subscription.cancel();
+    }
 
     setState(() {
       _isCounting = false;
