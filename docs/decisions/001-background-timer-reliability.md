@@ -37,46 +37,6 @@ Both iOS and Android suspend apps when the screen locks to conserve battery. Thi
 
 ## Options Comparison Matrix
 
-#### iOS Behavior
-
-When the iPhone screen locks:
-
-- iOS suspends the app to conserve battery
-- The Flutter engine is paused
-- `Future.delayed()` timers stop counting because they depend on the active Dart isolate
-- The app "freezes" at approximately 30 seconds into the timer
-- After 5 minutes of wall clock time, only ~30 seconds have elapsed from the app's perspective
-- The gong never plays because the timer never completes
-
-#### Android Behavior
-
-Android devices exhibit similar issues but with more variability:
-
-- **Doze Mode** (Android 6.0+): When screen is off and device stationary, apps are suspended
-- `Future.delayed()` timers also stop in Doze mode
-- Behavior varies by manufacturer (Samsung, Xiaomi, Huawei have aggressive battery optimizations)
-- May work for several minutes before Doze activates, but unreliable
-- No guarantees the timer will complete
-
-#### Root Cause
-
-The current implementation lacks:
-
-- Background execution permissions
-- OS-native timing mechanisms that work when app is suspended
-- Any wake locks or foreground services
-- Local notification scheduling
-
-## Decision Drivers
-
-- **Reliability**: Timer alerts must work consistently when device screen is locked
-- **Cross-platform compatibility**: Solution must work on both iOS and Android
-- **Battery efficiency**: Solution should minimize battery drain
-- **User experience**: Minimal disruption to users (e.g., screen should be allowed to lock)
-- **Development complexity**: Implementation should be maintainable and well-supported
-
-## Options Comparison Matrix
-
 | Criteria | Option 1: flutter_local_notifications | Option 2: awesome_notifications | Option 3: wakelock_plus | Option 4: Do Nothing | Option 5: Manual Workarounds | Option 6: Use Existing App |
 |----------|--------------------------------------|--------------------------------|------------------------|---------------------|----------------------------|---------------------------|
 | **Reliability** | ⭐⭐⭐⭐⭐ Excellent | ⭐⭐⭐⭐⭐ Excellent | ⭐⭐⭐⭐ Good (if screen stays on) | ⭐ Poor | ⭐⭐ Poor | ⭐⭐⭐⭐⭐ Excellent |
@@ -330,19 +290,6 @@ Abandon custom development and use an existing timer app from the App Store or P
 - MultiTimer by Jee Chul Kim
 
 Requires evaluation for feature fit with specific use case (5-1-5-1-5-2-1 minute pattern).
-
-## Options Comparison Matrix
-
-| Criteria | Option 1: flutter_local_notifications | Option 2: awesome_notifications | Option 3: wakelock_plus | Option 4: Do Nothing | Option 5: Manual Workarounds | Option 6: Use Existing App |
-|----------|--------------------------------------|--------------------------------|------------------------|---------------------|----------------------------|---------------------------|
-| **Reliability** | ⭐⭐⭐⭐⭐ Excellent | ⭐⭐⭐⭐⭐ Excellent | ⭐⭐⭐⭐ Good (if screen stays on) | ⭐ Poor | ⭐⭐ Poor | ⭐⭐⭐⭐⭐ Excellent |
-| **Cross-platform** | ⭐⭐⭐⭐⭐ Full support | ⭐⭐⭐⭐⭐ Full support | ⭐⭐⭐⭐⭐ Full support | ⭐⭐⭐⭐⭐ N/A | ⭐⭐ Platform-specific | ⭐⭐⭐⭐⭐ Full support |
-| **Battery Efficiency** | ⭐⭐⭐⭐⭐ Excellent | ⭐⭐⭐⭐⭐ Excellent | ⭐ Very Poor | ⭐⭐⭐⭐⭐ N/A | ⭐ Very Poor | ⭐⭐⭐⭐⭐ Excellent |
-| **User Experience** | ⭐⭐⭐⭐⭐ Excellent | ⭐⭐⭐⭐⭐ Excellent | ⭐⭐ Poor | ⭐ Unacceptable | ⭐⭐ Poor | ⭐⭐⭐⭐ Good (depends on app) |
-| **Development Complexity** | ⭐⭐⭐ Moderate | ⭐⭐ Higher | ⭐⭐⭐⭐⭐ Very Simple | ⭐⭐⭐⭐⭐ None | ⭐⭐⭐⭐ Low Code | ⭐⭐⭐⭐⭐ None |
-| **Maintenance Burden** | ⭐⭐⭐⭐ Low | ⭐⭐⭐ Moderate | ⭐⭐⭐⭐ Low | ⭐⭐⭐⭐⭐ None | ⭐ Very High | ⭐⭐⭐⭐⭐ None |
-| **Industry Standard** | ⭐⭐⭐⭐⭐ Yes | ⭐⭐⭐⭐ Acceptable | ⭐⭐ Uncommon | ⭐ Unacceptable | ⭐ Unprofessional | ⭐⭐⭐⭐⭐ Standard |
-| **Overall Recommendation** | **RECOMMENDED** | Alternative | Not Recommended | Not Viable | Not Recommended | Viable Alternative |
 
 ## Technical Considerations
 
