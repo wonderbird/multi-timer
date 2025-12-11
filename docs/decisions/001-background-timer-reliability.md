@@ -4,11 +4,38 @@
 
 Proposed
 
+## Executive Summary
+
+The timer app's gong sound fails to play after 5 minutes when the device screen locks because both iOS and Android suspend background apps, stopping Dart's `Future.delayed()` timers. This affects core app functionality and requires architectural changes.
+
+**Recommended Solution**: Implement OS-native local notifications using `flutter_local_notifications` package. This is the industry-standard approach used by timer apps and provides reliable cross-platform functionality with minimal battery impact.
+
+**Key Trade-offs**: Increased implementation complexity and platform-specific configuration in exchange for reliable timer delivery when screen is locked.
+
 ## Context
 
-The multi-timer application uses `Future.delayed()` to wait for specific durations (5 minutes, 1 minute, etc.) before playing a gong sound. During testing on iPhone, it was discovered that the gong sound does not play after 5 minutes when the device screen locks automatically after 30 seconds of inactivity.
+The multi-timer application uses `Future.delayed()` to wait for specific durations (5 minutes, 1 minute, etc.) before playing a gong sound. During testing on iPhone, the gong sound does not play after 5 minutes when the device screen locks automatically after 30 seconds of inactivity.
 
-### Problem Analysis
+Both iOS and Android suspend apps when the screen locks to conserve battery. This causes the Flutter engine to pause, stopping Dart timers from counting. The app "freezes" in its current state, and timers never complete.
+
+## Decision Drivers
+
+1. **Reliability** (highest priority): Timer alerts must work consistently when device screen is locked
+2. **Cross-platform compatibility**: Solution must work on both iOS and Android
+3. **Battery efficiency**: Solution should minimize battery drain
+4. **User experience**: Minimal disruption to users (e.g., screen should be allowed to lock)
+5. **Development complexity**: Implementation should be maintainable and well-supported
+
+## Considered Options
+
+1. **Implement Local Notifications with `flutter_local_notifications`** (RECOMMENDED)
+2. Use `awesome_notifications` Package (Alternative)
+3. Keep Screen Awake with `wakelock_plus` (Not Recommended)
+4. Do Nothing / Accept Current Behavior (Not Viable)
+5. Document Manual Workarounds for Users (Not Recommended)
+6. Purchase/Use Existing Timer App (Viable Alternative)
+
+## Options Comparison Matrix
 
 #### iOS Behavior
 
@@ -48,18 +75,28 @@ The current implementation lacks:
 - **User experience**: Minimal disruption to users (e.g., screen should be allowed to lock)
 - **Development complexity**: Implementation should be maintainable and well-supported
 
-## Considered Options
+## Options Comparison Matrix
+
+| Criteria | Option 1: flutter_local_notifications | Option 2: awesome_notifications | Option 3: wakelock_plus | Option 4: Do Nothing | Option 5: Manual Workarounds | Option 6: Use Existing App |
+|----------|--------------------------------------|--------------------------------|------------------------|---------------------|----------------------------|---------------------------|
+| **Reliability** | ⭐⭐⭐⭐⭐ Excellent | ⭐⭐⭐⭐⭐ Excellent | ⭐⭐⭐⭐ Good (if screen stays on) | ⭐ Poor | ⭐⭐ Poor | ⭐⭐⭐⭐⭐ Excellent |
+| **Cross-platform** | ⭐⭐⭐⭐⭐ Full support | ⭐⭐⭐⭐⭐ Full support | ⭐⭐⭐⭐⭐ Full support | ⭐⭐⭐⭐⭐ N/A | ⭐⭐ Platform-specific | ⭐⭐⭐⭐⭐ Full support |
+| **Battery Efficiency** | ⭐⭐⭐⭐⭐ Excellent | ⭐⭐⭐⭐⭐ Excellent | ⭐ Very Poor | ⭐⭐⭐⭐⭐ N/A | ⭐ Very Poor | ⭐⭐⭐⭐⭐ Excellent |
+| **User Experience** | ⭐⭐⭐⭐⭐ Excellent | ⭐⭐⭐⭐⭐ Excellent | ⭐⭐ Poor | ⭐ Unacceptable | ⭐⭐ Poor | ⭐⭐⭐⭐ Good (depends on app) |
+| **Development Complexity** | ⭐⭐⭐ Moderate | ⭐⭐ Higher | ⭐⭐⭐⭐⭐ Very Simple | ⭐⭐⭐⭐⭐ None | ⭐⭐⭐⭐ Low Code | ⭐⭐⭐⭐⭐ None |
+| **Maintenance Burden** | ⭐⭐⭐⭐ Low | ⭐⭐⭐ Moderate | ⭐⭐⭐⭐ Low | ⭐⭐⭐⭐⭐ None | ⭐ Very High | ⭐⭐⭐⭐⭐ None |
+| **Industry Standard** | ⭐⭐⭐⭐⭐ Yes | ⭐⭐⭐⭐ Acceptable | ⭐⭐ Uncommon | ⭐ Unacceptable | ⭐ Unprofessional | ⭐⭐⭐⭐⭐ Standard |
+| **Overall Recommendation** | **RECOMMENDED** | Alternative | Not Recommended | Not Viable | Not Recommended | Viable Alternative |
+
+## Detailed Options Analysis
 
 ### Option 1: Implement Local Notifications with `flutter_local_notifications`
 
 Schedule OS-native notifications at the required times when user starts the timer.
 
-#### Technical Details
+#### Summary
 
-- Use `flutter_local_notifications` package (v9.5.3+1 or later)
-- Schedule all 7 notifications upfront at calculated times
-- Each notification configured with custom gong sound
-- OS handles timing and delivery, independent of app state
+Use the `flutter_local_notifications` package to schedule all 7 timer notifications when the user presses start. The operating system manages timing and delivery, ensuring reliability even when the app is suspended.
 
 #### Positive Consequences
 
@@ -91,15 +128,21 @@ Schedule OS-native notifications at the required times when user starts the time
 - **Timezone dependency**: Lightweight package (~1MB); widely used and maintained
 - **Implementation complexity**: Well-documented package with extensive examples; complexity is one-time investment for reliable functionality
 
+#### Technical Implementation Details
+
+- Use `flutter_local_notifications` package (v9.5.3+1 or later)
+- Schedule all 7 notifications upfront at calculated times when user presses "Start"
+- Each notification configured with custom gong sound
+- OS handles timing and delivery, independent of app state
+- Use `androidAllowWhileIdle: true` to ensure delivery even in Doze mode
+
 ### Option 2: Use `awesome_notifications` Package
 
 Alternative notification package with more features and customization.
 
-#### Technical Details
+#### Summary
 
-- Use `awesome_notifications` package
-- Schedule notifications with advanced UI customization
-- Similar OS-native notification approach
+Similar to Option 1 but with more advanced notification UI capabilities. Provides richer customization options at the cost of increased complexity and package size.
 
 #### Positive Consequences
 
@@ -124,16 +167,19 @@ Alternative notification package with more features and customization.
 - **Overkill for simple timers**: Consider only if need advanced notification features beyond basic sound alerts
 - **Learning curve**: Prototype with simpler `flutter_local_notifications` first; migrate only if advanced features prove necessary
 
+#### Technical Implementation Details
+
+- Use `awesome_notifications` package
+- Schedule notifications with advanced UI customization
+- Similar OS-native notification approach to Option 1
+
 ### Option 3: Keep Screen Awake with `wakelock_plus`
 
 Prevent device screen from locking so current timer implementation continues to work.
 
-#### Technical Details
+#### Summary
 
-- Use `wakelock_plus` package
-- Acquire wake lock when timer starts
-- Release when timer completes or user stops
-- Current `Future.delayed()` implementation remains unchanged
+Use `wakelock_plus` package to prevent screen from sleeping during timer operation. Allows existing `Future.delayed()` code to work but causes significant battery drain and poor user experience.
 
 #### Positive Consequences
 
@@ -164,14 +210,20 @@ Prevent device screen from locking so current timer implementation continues to 
 
 **Overall assessment**: Mitigations are insufficient; this approach has fundamental drawbacks that cannot be adequately addressed.
 
+#### Technical Implementation Details
+
+- Use `wakelock_plus` package
+- Acquire wake lock when timer starts
+- Release when timer completes or user stops
+- Current `Future.delayed()` implementation remains unchanged
+
 ### Option 4: Do Nothing (Accept Current Behavior)
 
 Continue with current implementation, accept that timer only works with screen unlocked.
 
-#### Technical Details
+#### Summary
 
-- No code changes
-- Document limitation for users
+Make no changes to the codebase. Document the limitation that users must keep their screen on for timers to function. Not viable for production use.
 
 #### Positive Consequences
 
@@ -201,11 +253,9 @@ Continue with current implementation, accept that timer only works with screen u
 
 Document ways users can configure their devices to keep app running.
 
-#### Technical Details
+#### Summary
 
-- Document iOS setting to increase auto-lock time
-- Document Android battery optimization exemption process
-- Instruct users to keep screen on manually
+Provide documentation instructing users to modify device settings (increase auto-lock time, disable battery optimization) rather than fixing the app. Places unreasonable burden on users and doesn't reliably solve the problem.
 
 #### Positive Consequences
 
@@ -239,13 +289,9 @@ Document ways users can configure their devices to keep app running.
 
 Instead of building custom solution, use existing timer applications.
 
-#### Technical Details
+#### Summary
 
-- Research existing timer apps:
-  - Insight Timer (meditation app with interval timers)
-  - Interval Timer - HIIT Workouts
-  - MultiTimer by Jee Chul Kim
-- Evaluate feature fit for specific use case (5-1-5-1-5-2-1 pattern)
+Abandon custom development and use an existing timer app from the App Store or Play Store. Evaluates trade-off between development effort and control over functionality.
 
 #### Positive Consequences
 
@@ -276,6 +322,14 @@ Instead of building custom solution, use existing timer applications.
 - **Ads/unwanted features**: Look for premium versions or ad-free options; factor cost into decision
 
 **Overall assessment**: Viable option if an existing app meets requirements; evaluate thoroughly before abandoning custom development.
+
+#### Candidate Apps
+
+- Insight Timer (meditation app with interval timers)
+- Interval Timer - HIIT Workouts
+- MultiTimer by Jee Chul Kim
+
+Requires evaluation for feature fit with specific use case (5-1-5-1-5-2-1 minute pattern).
 
 ## Options Comparison Matrix
 
@@ -360,4 +414,36 @@ If Option 1 is selected, suggested implementation phases:
 ## Implementation Notes
 
 [To be completed after decision is made]
+
+## Appendix: Detailed Problem Analysis
+
+### iOS Behavior
+
+When the iPhone screen locks:
+
+- iOS suspends the app to conserve battery
+- The Flutter engine is paused
+- `Future.delayed()` timers stop counting because they depend on the active Dart isolate
+- The app "freezes" at approximately 30 seconds into the timer
+- After 5 minutes of wall clock time, only ~30 seconds have elapsed from the app's perspective
+- The gong never plays because the timer never completes
+
+### Android Behavior
+
+Android devices exhibit similar issues but with more variability:
+
+- **Doze Mode** (Android 6.0+): When screen is off and device stationary, apps are suspended
+- `Future.delayed()` timers also stop in Doze mode
+- Behavior varies by manufacturer (Samsung, Xiaomi, Huawei have aggressive battery optimizations)
+- May work for several minutes before Doze activates, but unreliable
+- No guarantees the timer will complete
+
+### Root Cause
+
+The current implementation lacks:
+
+- Background execution permissions
+- OS-native timing mechanisms that work when app is suspended
+- Any wake locks or foreground services
+- Local notification scheduling
 
