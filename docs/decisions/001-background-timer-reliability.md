@@ -277,6 +277,78 @@ Instead of building custom solution, use existing timer applications.
 
 **Overall assessment**: Viable option if an existing app meets requirements; evaluate thoroughly before abandoning custom development.
 
+## Options Comparison Matrix
+
+| Criteria | Option 1: flutter_local_notifications | Option 2: awesome_notifications | Option 3: wakelock_plus | Option 4: Do Nothing | Option 5: Manual Workarounds | Option 6: Use Existing App |
+|----------|--------------------------------------|--------------------------------|------------------------|---------------------|----------------------------|---------------------------|
+| **Reliability** | ⭐⭐⭐⭐⭐ Excellent | ⭐⭐⭐⭐⭐ Excellent | ⭐⭐⭐⭐ Good (if screen stays on) | ⭐ Poor | ⭐⭐ Poor | ⭐⭐⭐⭐⭐ Excellent |
+| **Cross-platform** | ⭐⭐⭐⭐⭐ Full support | ⭐⭐⭐⭐⭐ Full support | ⭐⭐⭐⭐⭐ Full support | ⭐⭐⭐⭐⭐ N/A | ⭐⭐ Platform-specific | ⭐⭐⭐⭐⭐ Full support |
+| **Battery Efficiency** | ⭐⭐⭐⭐⭐ Excellent | ⭐⭐⭐⭐⭐ Excellent | ⭐ Very Poor | ⭐⭐⭐⭐⭐ N/A | ⭐ Very Poor | ⭐⭐⭐⭐⭐ Excellent |
+| **User Experience** | ⭐⭐⭐⭐⭐ Excellent | ⭐⭐⭐⭐⭐ Excellent | ⭐⭐ Poor | ⭐ Unacceptable | ⭐⭐ Poor | ⭐⭐⭐⭐ Good (depends on app) |
+| **Development Complexity** | ⭐⭐⭐ Moderate | ⭐⭐ Higher | ⭐⭐⭐⭐⭐ Very Simple | ⭐⭐⭐⭐⭐ None | ⭐⭐⭐⭐ Low Code | ⭐⭐⭐⭐⭐ None |
+| **Maintenance Burden** | ⭐⭐⭐⭐ Low | ⭐⭐⭐ Moderate | ⭐⭐⭐⭐ Low | ⭐⭐⭐⭐⭐ None | ⭐ Very High | ⭐⭐⭐⭐⭐ None |
+| **Industry Standard** | ⭐⭐⭐⭐⭐ Yes | ⭐⭐⭐⭐ Acceptable | ⭐⭐ Uncommon | ⭐ Unacceptable | ⭐ Unprofessional | ⭐⭐⭐⭐⭐ Standard |
+| **Overall Recommendation** | **RECOMMENDED** | Alternative | Not Recommended | Not Viable | Not Recommended | Viable Alternative |
+
+## Technical Considerations
+
+### Current Timer Implementation
+
+The app defines a sequence of 7 wait durations:
+
+```dart
+final List<int> _waitDurations = [300, 60, 300, 60, 300, 120, 60];
+// Translates to: 5 min, 1 min, 5 min, 1 min, 5 min, 2 min, 1 min
+```
+
+### Sound Asset Requirements
+
+- **Current format**: MP3 (`assets/gong.mp3`)
+- **Android requirement**: MP3 or other Android-supported formats
+- **iOS requirement**: AIFF, CAF, or other iOS-supported formats
+- **Action needed**: Convert gong.mp3 to gong.aiff for iOS notifications
+
+### Notification Scheduling Pattern
+
+For Options 1 and 2, notifications would be scheduled at cumulative times:
+
+| Notification | Time from Start | Cumulative Seconds |
+|-------------|----------------|-------------------|
+| 1 | 5 minutes | 300s |
+| 2 | 6 minutes | 360s |
+| 3 | 11 minutes | 660s |
+| 4 | 12 minutes | 720s |
+| 5 | 17 minutes | 1020s |
+| 6 | 19 minutes | 1140s |
+| 7 | 20 minutes | 1200s |
+
+### Permission Requirements by Platform
+
+#### iOS (Option 1 or 2)
+
+- Request notification permission via `UNUserNotificationCenter`
+- Users can deny; app must handle gracefully
+- Add `UIBackgroundModes` key with `remote-notification` value (optional for better reliability)
+
+#### Android (Option 1 or 2)
+
+- Notification permission required for Android 13+ (API level 33+)
+- Need to declare in AndroidManifest.xml:
+  - `android.permission.POST_NOTIFICATIONS` (Android 13+)
+  - `android.permission.SCHEDULE_EXACT_ALARM` (Android 12+)
+  - `android.permission.USE_EXACT_ALARM` (Android 14+)
+
+### Migration Path
+
+If Option 1 is selected, suggested implementation phases:
+
+1. **Phase 1**: Add dependencies and platform configuration
+2. **Phase 2**: Implement notification initialization and permission request
+3. **Phase 3**: Convert sound file to iOS-compatible format
+4. **Phase 4**: Replace `Future.delayed()` loop with notification scheduling
+5. **Phase 5**: Test on both iOS and Android with screen locked
+6. **Phase 6**: Handle notification cancellation if user stops timer early
+
 ## Decision
 
 [To be decided by stakeholder]
