@@ -5,9 +5,16 @@ A minimal Flutter timer application.
 ## Functionality
 
 1.  **Start**: The app presents a "Start" button in the center of the screen.
-2.  **Wait**: Tapping the button turns the screen black and waits for 5 seconds.
-3.  **Alarm**: After the wait, a gong sound plays for 3 seconds.
-4.  **Reset**: The sound stops and the app returns to the initial state.
+2.  **Multi-Cycle Timer**: Tapping the button turns the screen black and begins a sequence of timed intervals:
+    - 5 minutes → gong sound
+    - 1 minute → gong sound
+    - 5 minutes → gong sound
+    - 1 minute → gong sound
+    - 5 minutes → gong sound
+    - 2 minutes → gong sound
+    - 1 minute → gong sound
+3.  **Alarm**: After each wait period, a gong sound plays. The app waits for the sound to finish before starting the next interval.
+4.  **Reset**: After completing all cycles, the app returns to the initial state with the "Start" button.
 
 ## Developer Instructions
 
