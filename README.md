@@ -61,6 +61,31 @@ To run on an iPhone using a free Apple Developer account:
     *   Navigate to **General > VPN & Device Management** (or Profiles).
     *   Tap your Apple ID email and select **Trust**.
 
+### Running on Android (Simulator)
+
+To run on an Android emulator:
+
+1.  **Open Project in Android Studio**:
+    *   Launch Android Studio.
+    *   Select **File > Open**.
+    *   Navigate to and select the entire project folder.
+
+2.  **Configure Flutter SDK**:
+    *   Go to **Settings** (or **Preferences** on Mac).
+    *   Navigate to **Languages & Frameworks > Flutter**.
+    *   Set the Flutter SDK path (e.g., `/Users/username/flutter`).
+    *   Click **Apply** and **OK**.
+
+3.  **Create/Start an Emulator**:
+    *   Go to **Tools > Device Manager**.
+    *   If no emulator exists, click **Create Device** and follow the wizard.
+    *   Click the **Play** button next to your emulator to start it.
+
+4.  **Run**:
+    *   Wait for the emulator to fully boot.
+    *   Select your emulator from the device dropdown in the toolbar.
+    *   Click the **Run** button (or press **Shift + F10**).
+
 ### Structure
 - `lib/main.dart`: Contains the entire application logic.
 - `assets/gong.mp3`: The alarm sound file.
