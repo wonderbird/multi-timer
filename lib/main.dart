@@ -35,22 +35,12 @@ class _TimerScreenState extends State<TimerScreen> {
   bool _isCounting = false;
   final AudioPlayer _player = AudioPlayer();
   
-  // Debug mode: divide by 60 to convert minutes to seconds for quick testing
-  // Release mode: use actual durations
-  static const int _debugDivisor = kDebugMode ? 60 : 1;
-  
   // Define wait durations for each cycle (in seconds)
-  // Production: 5 min, 1 min, 5 min, 1 min, 5 min, 2 min, 1 min
-  // Debug: 5 sec, 1 sec, 5 sec, 1 sec, 5 sec, 2 sec, 1 sec
-  final List<int> _waitDurations = [
-    300 ~/ _debugDivisor,
-    60 ~/ _debugDivisor,
-    300 ~/ _debugDivisor,
-    60 ~/ _debugDivisor,
-    300 ~/ _debugDivisor,
-    120 ~/ _debugDivisor,
-    60 ~/ _debugDivisor,
-  ];
+  // Release mode: Production wait times (5 min, 1 min, 5 min, 1 min, 5 min, 2 min, 1 min)
+  // Debug mode: Quick testing with 2 seconds each
+  final List<int> _waitDurations = kDebugMode
+      ? [2, 2]  // Debug: just two cycles of 2 seconds each
+      : [300, 60, 300, 60, 300, 120, 60];  // Release: full production timings
 
   @override
   void dispose() {
