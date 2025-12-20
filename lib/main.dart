@@ -30,17 +30,35 @@ class TimerScreen extends StatefulWidget {
   State<TimerScreen> createState() => _TimerScreenState();
 }
 
-// ...existing code...
+// Session data class to hold duration and optional audio file
+class SessionData {
+  final int durationSeconds;
+  final String? audioFile;  // Optional audio file to play before the session
+  
+  SessionData(this.durationSeconds, [this.audioFile]);
+}
+
 class _TimerScreenState extends State<TimerScreen> {
   bool _isCounting = false;
   final AudioPlayer _player = AudioPlayer();
   
-  // Define wait durations for each cycle (in seconds)
+  // Define sessions with wait durations and optional audio files
   // Release mode: Production wait times (5 min, 1 min, 5 min, 1 min, 5 min, 2 min, 1 min)
   // Debug mode: Quick testing with 2 seconds each
-  final List<int> _waitDurations = kDebugMode
-      ? [2, 2]  // Debug: just two cycles of 2 seconds each
-      : [300, 60, 300, 60, 300, 120, 60];  // Release: full production timings
+  final List<SessionData> _sessions = kDebugMode
+      ? [
+          SessionData(2, 'session1.mp3'),  // Debug: session 1 with audio
+          SessionData(2, 'session2.mp3'),  // Debug: session 2 with audio
+        ]
+      : [
+          SessionData(300, 'session1.mp3'),  // 5 min
+          SessionData(60, 'session2.mp3'),   // 1 min
+          SessionData(300, 'session1.mp3'),  // 5 min
+          SessionData(60, 'session2.mp3'),   // 1 min
+          SessionData(300, 'session1.mp3'),  // 5 min
+          SessionData(120, 'session2.mp3'),  // 2 min
+          SessionData(60, 'session1.mp3'),   // 1 min
+        ];
 
   @override
   void dispose() {
@@ -53,9 +71,29 @@ class _TimerScreenState extends State<TimerScreen> {
       _isCounting = true;
     });
 
-    for (int duration in _waitDurations) {
+    for (SessionData session in _sessions) {
+      // Play session audio if available (before starting the timer)
+      if (session.audioFile != null) {
+        // Create a completer to wait for audio completion
+        final completer = Completer<void>();
+        
+        // Listen for when the audio finishes playing
+        final subscription = _player.onPlayerComplete.listen((_) {
+          completer.complete();
+        });
+
+        // Play session audio
+        await _player.play(AssetSource(session.audioFile!));
+
+        // Wait for the sound to finish playing
+        await completer.future;
+
+        // Clean up the subscription
+        await subscription.cancel();
+      }
+
       // Wait for the specified duration
-      await Future.delayed(Duration(seconds: duration));
+      await Future.delayed(Duration(seconds: session.durationSeconds));
 
       // Create a completer to wait for audio completion
       final completer = Completer<void>();
@@ -65,7 +103,7 @@ class _TimerScreenState extends State<TimerScreen> {
         completer.complete();
       });
 
-      // Play sound
+      // Play gong sound at the end of the session
       await _player.play(AssetSource('gong.mp3'));
 
       // Wait for the sound to finish playing
