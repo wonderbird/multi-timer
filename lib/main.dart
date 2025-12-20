@@ -76,24 +76,10 @@ class _TimerScreenState extends State<TimerScreen> {
     });
 
     for (SessionData session in _sessions) {
-      // Play session audio if available (before starting the timer)
+      // Play session audio if available (concurrent with timer)
       if (session.audioFile != null) {
-        // Create a completer to wait for audio completion
-        final completer = Completer<void>();
-        
-        // Listen for when the audio finishes playing
-        final subscription = _player.onPlayerComplete.listen((_) {
-          completer.complete();
-        });
-
-        // Play session audio
+        // Play session audio without waiting for it to finish
         await _player.play(AssetSource(session.audioFile!));
-
-        // Wait for the sound to finish playing
-        await completer.future;
-
-        // Clean up the subscription
-        await subscription.cancel();
       }
 
       // Wait for the specified duration
