@@ -51,16 +51,17 @@ class _TimerScreenState extends State<TimerScreen> {
   late final List<SessionData> _sessions = kDebugMode
       ? [
           SessionData(2, '${_assetPrefix}session1.mp3'),  // Debug: session 1 with audio
-          SessionData(2, '${_assetPrefix}session2.mp3'),  // Debug: session 2 with audio
+          SessionData(1),                                 // Debug: session break with no audio
+          SessionData(2, '${_assetPrefix}session2.mp3'),  // Debug: session 3 with audio
         ]
       : [
           SessionData(300, '${_assetPrefix}session1.mp3'),  // 5 min
-          SessionData(60, '${_assetPrefix}session2.mp3'),   // 1 min
-          SessionData(300, '${_assetPrefix}session1.mp3'),  // 5 min
-          SessionData(60, '${_assetPrefix}session2.mp3'),   // 1 min
-          SessionData(300, '${_assetPrefix}session1.mp3'),  // 5 min
-          SessionData(120, '${_assetPrefix}session2.mp3'),  // 2 min
-          SessionData(60, '${_assetPrefix}session1.mp3'),   // 1 min
+          SessionData(60),                                  // 1 min
+          SessionData(300, '${_assetPrefix}session2.mp3'),  // 5 min
+          SessionData(60),                                  // 1 min
+          SessionData(300, '${_assetPrefix}session3.mp3'),  // 5 min
+          SessionData(120, '${_assetPrefix}session4.mp3'),  // 2 min
+          SessionData(60, '${_assetPrefix}session5.mp3'),   // 1 min
         ];
 
   @override
