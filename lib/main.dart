@@ -50,8 +50,9 @@ class _TimerScreenState extends State<TimerScreen> {
   // Debug mode: Quick testing with 2 seconds each
   late final List<SessionData> _sessions = kDebugMode
       ? [
-          SessionData(2, '${_assetPrefix}session1.mp3'),  // Debug: session 1 with audio
+          SessionData(5, '${_assetPrefix}session1.mp3'),  // Debug: session 1 with audio
           SessionData(1),                                 // Debug: session break with no audio
+          SessionData(2, '${_assetPrefix}session2.mp3'),  // Debug: session 3 with audio
           SessionData(2, '${_assetPrefix}session2.mp3'),  // Debug: session 3 with audio
         ]
       : [
