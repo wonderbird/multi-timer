@@ -42,22 +42,25 @@ class _TimerScreenState extends State<TimerScreen> {
   bool _isCounting = false;
   final AudioPlayer _player = AudioPlayer();
   
+  // Get the asset path prefix based on build mode
+  String get _assetPrefix => kDebugMode ? 'debug/' : 'release/';
+  
   // Define sessions with wait durations and optional audio files
   // Release mode: Production wait times (5 min, 1 min, 5 min, 1 min, 5 min, 2 min, 1 min)
   // Debug mode: Quick testing with 2 seconds each
-  final List<SessionData> _sessions = kDebugMode
+  late final List<SessionData> _sessions = kDebugMode
       ? [
-          SessionData(2, 'session1.mp3'),  // Debug: session 1 with audio
-          SessionData(2, 'session2.mp3'),  // Debug: session 2 with audio
+          SessionData(2, '${_assetPrefix}session1.mp3'),  // Debug: session 1 with audio
+          SessionData(2, '${_assetPrefix}session2.mp3'),  // Debug: session 2 with audio
         ]
       : [
-          SessionData(300, 'session1.mp3'),  // 5 min
-          SessionData(60, 'session2.mp3'),   // 1 min
-          SessionData(300, 'session1.mp3'),  // 5 min
-          SessionData(60, 'session2.mp3'),   // 1 min
-          SessionData(300, 'session1.mp3'),  // 5 min
-          SessionData(120, 'session2.mp3'),  // 2 min
-          SessionData(60, 'session1.mp3'),   // 1 min
+          SessionData(300, '${_assetPrefix}session1.mp3'),  // 5 min
+          SessionData(60, '${_assetPrefix}session2.mp3'),   // 1 min
+          SessionData(300, '${_assetPrefix}session1.mp3'),  // 5 min
+          SessionData(60, '${_assetPrefix}session2.mp3'),   // 1 min
+          SessionData(300, '${_assetPrefix}session1.mp3'),  // 5 min
+          SessionData(120, '${_assetPrefix}session2.mp3'),  // 2 min
+          SessionData(60, '${_assetPrefix}session1.mp3'),   // 1 min
         ];
 
   @override
