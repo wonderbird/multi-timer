@@ -50,7 +50,7 @@ class _TimerScreenState extends State<TimerScreen> {
   // Debug mode: Quick testing with 2 seconds each
   late final List<SessionData> _sessions = kDebugMode
       ? [
-          SessionData(5, '${_assetPrefix}session1.mp3'),  // Debug: session 1 with audio
+          SessionData(5, '${_assetPrefix}session2.mp3'),  // Debug: session 1 with audio
           SessionData(1),                                 // Debug: session break with no audio
           SessionData(2, '${_assetPrefix}session2.mp3'),  // Debug: session 3 with audio
           SessionData(2, '${_assetPrefix}session2.mp3'),  // Debug: session 3 with audio
@@ -77,30 +77,26 @@ class _TimerScreenState extends State<TimerScreen> {
     });
 
     for (SessionData session in _sessions) {
-      // Play session audio if available (concurrent with timer)
       if (session.audioFile != null) {
-        // Play session audio without waiting for it to finish
+        final completer = Completer<void>();
+        final subscription = _player.onPlayerComplete.listen((_) {
+          completer.complete();
+        });
         await _player.play(AssetSource(session.audioFile!));
+        await completer.future;
+        await subscription.cancel();
       }
 
-      // Wait for the specified duration
       await Future.delayed(Duration(seconds: session.durationSeconds));
 
-      // Create a completer to wait for audio completion
       final completer = Completer<void>();
-      
-      // Listen for when the audio finishes playing
       final subscription = _player.onPlayerComplete.listen((_) {
         completer.complete();
       });
 
-      // Play gong sound at the end of the session
       await _player.play(AssetSource('gong.mp3'));
-
-      // Wait for the sound to finish playing
       await completer.future;
 
-      // Clean up the subscription
       await subscription.cancel();
     }
 
