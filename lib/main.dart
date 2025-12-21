@@ -39,9 +39,13 @@ class SessionData {
   SessionData(this.durationSeconds, [this.audioFile, this.audioDurationMs = 0]);
 }
 
+const int kGongDurationMs = 6080;
+
 class _TimerScreenState extends State<TimerScreen> {
   bool _isCounting = false;
   final AudioPlayer _player = AudioPlayer();
+  double _progress = 0.0;  // Progress from 0.0 to 1.0
+  Timer? _progressTimer;
   
   // Get the asset path prefix based on build mode
   String get _assetPrefix => kDebugMode ? 'debug/' : 'release/';
@@ -49,9 +53,9 @@ class _TimerScreenState extends State<TimerScreen> {
   // Define sessions with wait durations and optional audio files
   late final List<SessionData> _sessions = kDebugMode
       ? [
-          SessionData(5, '${_assetPrefix}session1.mp3', 2300),
+          SessionData(9, '${_assetPrefix}session1.mp3', 2300),
           SessionData(1),
-          SessionData(2, '${_assetPrefix}session2.mp3', 860),
+          SessionData(8, '${_assetPrefix}session2.mp3', 860),
         ]
       : [
           SessionData(300, '${_assetPrefix}ganzkoerperatmung.mp3', 8000),
@@ -65,8 +69,15 @@ class _TimerScreenState extends State<TimerScreen> {
 
   @override
   void dispose() {
+    _progressTimer?.cancel();
     _player.dispose();
     super.dispose();
+  }
+  
+  int _calculateTotalDuration() {
+    return _sessions.fold(0, (sum, session) {
+      return sum + session.durationSeconds * 1000;
+    });
   }
 
   Future<void> _playAudioAndWait(String audioPath) async {
@@ -82,16 +93,36 @@ class _TimerScreenState extends State<TimerScreen> {
   Future<void> _startTimer() async {
     setState(() {
       _isCounting = true;
+      _progress = 0.0;
+    });
+
+    final totalDuration = _calculateTotalDuration();
+    debugPrint('Total duration: ${totalDuration}ms (${(totalDuration / 1000).toStringAsFixed(1)}s)');
+    final startTime = DateTime.now();
+    
+    // Update progress every 100ms
+    _progressTimer = Timer.periodic(const Duration(milliseconds: 500), (timer) {
+      final elapsed = DateTime.now().difference(startTime).inMilliseconds;
+      setState(() {
+        _progress = (elapsed / totalDuration).clamp(0.0, 1.0);
+        final elapsedSec = (elapsed / 1000).toStringAsFixed(3).padLeft(7, ' ');
+        final totalSec = (totalDuration / 1000).toStringAsFixed(3).padLeft(7, ' ');
+        debugPrint('Elapsed: ${elapsedSec}s, Total: ${totalSec}s');
+        debugPrint('Progress: ${_progress.toStringAsFixed(2)}');
+      });
+      
+      if (_progress >= 1.0) {
+        timer.cancel();
+      }
     });
 
     for (SessionData session in _sessions) {
+      int remainingDurationMs = session.durationSeconds * 1000 - kGongDurationMs;
+
       if (session.audioFile != null) {
+        remainingDurationMs -= session.audioDurationMs;
         await _playAudioAndWait(session.audioFile!);
       }
-
-      // Calculate remaining timer duration after audio playback
-      final totalDurationMs = session.durationSeconds * 1000;
-      final remainingDurationMs = totalDurationMs - session.audioDurationMs;
       
       if (remainingDurationMs > 0) {
         await Future.delayed(Duration(milliseconds: remainingDurationMs));
@@ -100,17 +131,33 @@ class _TimerScreenState extends State<TimerScreen> {
       await _playAudioAndWait('gong.mp3');
     }
 
+    _progressTimer?.cancel();
     setState(() {
       _isCounting = false;
+      _progress = 0.0;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     if (_isCounting) {
-      return const Scaffold(
+      return Scaffold(
         backgroundColor: Colors.black,
-        body: SizedBox.shrink(),
+        body: Stack(
+          children: [
+            // Progress bar that fills from bottom to top
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: FractionallySizedBox(
+                heightFactor: _progress,
+                widthFactor: 1.0,
+                child: Container(
+                  color: Colors.deepPurple.withOpacity(0.3),
+                ),
+              ),
+            ),
+          ],
+        ),
       );
     }
 
