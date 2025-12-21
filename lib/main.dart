@@ -81,11 +81,25 @@ class _TimerScreenState extends State<TimerScreen> {
   }
 
   Future<void> _playAudioAndWait(String audioPath) async {
+    // CRITICAL FIX: Stop any previous playback to ensure clean state
+    await _player.stop();
+    
     final completer = Completer<void>();
+    
+    // Set up listener BEFORE playing to avoid race condition
     final subscription = _player.onPlayerComplete.listen((_) {
-      completer.complete();
+      if (!completer.isCompleted) {
+        completer.complete();
+      }
     });
-    await _player.play(AssetSource(audioPath));
+    
+    try {
+      await _player.play(AssetSource(audioPath));
+    } catch (e) {
+      await subscription.cancel();
+      rethrow;
+    }
+    
     await completer.future;
     await subscription.cancel();
   }
@@ -116,7 +130,9 @@ class _TimerScreenState extends State<TimerScreen> {
       }
     });
 
-    for (SessionData session in _sessions) {
+    for (int i = 0; i < _sessions.length; i++) {
+      SessionData session = _sessions[i];
+      
       int remainingDurationMs = session.durationSeconds * 1000 - kGongDurationMs;
 
       if (session.audioFile != null) {
