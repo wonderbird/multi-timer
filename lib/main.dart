@@ -34,8 +34,9 @@ class TimerScreen extends StatefulWidget {
 class SessionData {
   final int durationSeconds;
   final String? audioFile;  // Optional audio file to play before the session
+  final int audioDurationMs;  // Duration of the audio file in milliseconds
   
-  SessionData(this.durationSeconds, [this.audioFile]);
+  SessionData(this.durationSeconds, [this.audioFile, this.audioDurationMs = 0]);
 }
 
 class _TimerScreenState extends State<TimerScreen> {
@@ -46,23 +47,20 @@ class _TimerScreenState extends State<TimerScreen> {
   String get _assetPrefix => kDebugMode ? 'debug/' : 'release/';
   
   // Define sessions with wait durations and optional audio files
-  // Release mode: Production wait times (5 min, 1 min, 5 min, 1 min, 5 min, 2 min, 1 min)
-  // Debug mode: Quick testing with 2 seconds each
   late final List<SessionData> _sessions = kDebugMode
       ? [
-          SessionData(5, '${_assetPrefix}session2.mp3'),  // Debug: session 1 with audio
-          SessionData(1),                                 // Debug: session break with no audio
-          SessionData(2, '${_assetPrefix}session2.mp3'),  // Debug: session 3 with audio
-          SessionData(2, '${_assetPrefix}session2.mp3'),  // Debug: session 3 with audio
+          SessionData(5, '${_assetPrefix}session1.mp3', 2300),
+          SessionData(1),
+          SessionData(2, '${_assetPrefix}session2.mp3', 860),
         ]
       : [
-          SessionData(300, '${_assetPrefix}ganzkoerperatmung.mp3'),
-          SessionData(60,  '${_assetPrefix}atem-halten.mp3'),                                  // 1 min
-          SessionData(300, '${_assetPrefix}ganzkoerperatmung.mp3'),
-          SessionData(60,  '${_assetPrefix}atem-halten.mp3'),                                  // 1 min
-          SessionData(300, '${_assetPrefix}ganzkoerperatmung.mp3'),
-          SessionData(120, '${_assetPrefix}wellenatmen.mp3'),
-          SessionData(60,  '${_assetPrefix}atem-halten.mp3'),                                  // 1 min
+          SessionData(300, '${_assetPrefix}ganzkoerperatmung.mp3', 8000),
+          SessionData(60,  '${_assetPrefix}atem-halten.mp3', 8700),
+          SessionData(300, '${_assetPrefix}ganzkoerperatmung.mp3', 8000),
+          SessionData(60,  '${_assetPrefix}atem-halten.mp3', 8700),
+          SessionData(300, '${_assetPrefix}ganzkoerperatmung.mp3', 8000),
+          SessionData(120, '${_assetPrefix}wellenatmen.mp3', 9000),
+          SessionData(60,  '${_assetPrefix}atem-halten.mp3', 8700),
         ];
 
   @override
@@ -91,7 +89,13 @@ class _TimerScreenState extends State<TimerScreen> {
         await _playAudioAndWait(session.audioFile!);
       }
 
-      await Future.delayed(Duration(seconds: session.durationSeconds));
+      // Calculate remaining timer duration after audio playback
+      final totalDurationMs = session.durationSeconds * 1000;
+      final remainingDurationMs = totalDurationMs - session.audioDurationMs;
+      
+      if (remainingDurationMs > 0) {
+        await Future.delayed(Duration(milliseconds: remainingDurationMs));
+      }
 
       await _playAudioAndWait('gong.mp3');
     }
