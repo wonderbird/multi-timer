@@ -71,6 +71,16 @@ class _TimerScreenState extends State<TimerScreen> {
     super.dispose();
   }
 
+  Future<void> _playAudioAndWait(String audioPath) async {
+    final completer = Completer<void>();
+    final subscription = _player.onPlayerComplete.listen((_) {
+      completer.complete();
+    });
+    await _player.play(AssetSource(audioPath));
+    await completer.future;
+    await subscription.cancel();
+  }
+
   Future<void> _startTimer() async {
     setState(() {
       _isCounting = true;
@@ -78,26 +88,12 @@ class _TimerScreenState extends State<TimerScreen> {
 
     for (SessionData session in _sessions) {
       if (session.audioFile != null) {
-        final completer = Completer<void>();
-        final subscription = _player.onPlayerComplete.listen((_) {
-          completer.complete();
-        });
-        await _player.play(AssetSource(session.audioFile!));
-        await completer.future;
-        await subscription.cancel();
+        await _playAudioAndWait(session.audioFile!);
       }
 
       await Future.delayed(Duration(seconds: session.durationSeconds));
 
-      final completer = Completer<void>();
-      final subscription = _player.onPlayerComplete.listen((_) {
-        completer.complete();
-      });
-
-      await _player.play(AssetSource('gong.mp3'));
-      await completer.future;
-
-      await subscription.cancel();
+      await _playAudioAndWait('gong.mp3');
     }
 
     setState(() {
