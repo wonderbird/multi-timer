@@ -1,20 +1,51 @@
-# Multi Timer
+# Multi Timer für Atempraxis
 
-A minimal Flutter timer application.
+A guided breathing exercise application for iOS that helps users practice a specific therapeutic breathing technique rooted in shamanic and yoga traditions.
 
-## Functionality
+## Purpose
 
-1.  **Start**: The app presents a "Start" button in the center of the screen.
-2.  **Multi-Cycle Timer**: Tapping the button turns the screen black and begins a sequence of timed intervals:
-    - 5 minutes → gong sound
-    - 1 minute → gong sound
-    - 5 minutes → gong sound
-    - 1 minute → gong sound
-    - 5 minutes → gong sound
-    - 2 minutes → gong sound
-    - 1 minute → gong sound
-3.  **Alarm**: After each wait period, a gong sound plays. The app waits for the sound to finish before starting the next interval.
-4.  **Reset**: After completing all cycles, the app returns to the initial state with the "Start" button.
+This app guides users through a structured 20-minute breathing exercise sequence designed to help resolve psychological armors developed in early life stages. The technique uses specific breathing patterns (full body breathing, breath holding, wave breathing, and sensing) to promote emotional well-being and self-healing.
+
+## How It Works
+
+### Simple Interface
+
+The app provides a minimal, distraction-free interface with a single "Start" button. No configuration or learning curve required.
+
+### 7-Session Guided Sequence
+
+When the user taps "Start", the app executes a fixed sequence of 7 timed breathing sessions:
+
+1. **Ganzkörperatmung** (Full Body Breathing) - 5 minutes
+2. **Atem Halten** (Breath Holding) - 1 minute
+3. **Ganzkörperatmung** (Full Body Breathing) - 5 minutes
+4. **Atem Halten** (Breath Holding) - 1 minute
+5. **Ganzkörperatmung** (Full Body Breathing) - 5 minutes
+6. **Wellenatmen** (Wave Breathing) - 2 minutes
+7. **Nachspüren** (Sensing/Feeling After) - 1 minute
+
+**Total Duration**: 20 minutes
+
+### Audio Guidance
+
+- Before each session, the app plays a brief German-language audio instruction naming the technique
+- At the end of each session, a gong sound marks the transition
+- Audio guides practitioners without requiring them to watch the screen
+
+### Intentional Black Screen
+
+**Important for App Review**: The screen turns black during the exercise sequence *by design*, not as a bug. This intentional behavior:
+
+- Minimizes visual distractions during practice
+- Helps users focus on internal breathing experience
+- Reduces battery consumption
+- Includes a subtle progress bar for time awareness
+
+The black screen is a core feature of the meditative practice, allowing practitioners to concentrate fully on their breathing without external visual stimuli.
+
+### Automatic Progression
+
+The app automatically progresses through all sessions, playing audio cues and gongs at appropriate times. After completing the final session, the app returns to the start screen.
 
 ## Developer Instructions
 
