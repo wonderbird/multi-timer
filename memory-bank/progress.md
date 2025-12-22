@@ -55,8 +55,11 @@
   - Apple Distribution certificate confirmed
 - ✅ Step 3: Configure Xcode project signing
   - Automatic signing enabled, no errors
-- ⏳ Step 4: Build and archive in Xcode (IN PROGRESS)
-- ⏳ Step 5: Upload archive to TestFlight
+- ✅ Step 4: Build and archive
+  - Fixed CocoaPods issue with `flutter build ios --release`
+  - Archive created successfully in Xcode
+  - Git tag: v4 (source version tracking)
+- ⏳ Step 5: Upload archive to TestFlight (IN PROGRESS)
 - ⏳ Step 6: Wait for Apple build processing
 - ⏳ Step 7: Invite beta testers (2 friends)
 
@@ -83,7 +86,11 @@
 
 **Last Completed**: Added nachspüren (sensing) session to complete the 7-session breathing sequence (commit 3ee22db)
 
-**Next Immediate Task**: Step 4 - User builds and archives in Xcode
+**Next Immediate Task**: Step 5 - User uploads archive to TestFlight from Xcode Organizer
+
+**Version Tracking**: Git tag v4 marks the source code for this TestFlight build
+
+**Key Learning**: CocoaPods integration required `flutter build ios --release` before Xcode archive would work
 
 **Session Pattern**: AI provides one instruction at a time; user executes on Mac; AI updates memory bank after each completed step
 

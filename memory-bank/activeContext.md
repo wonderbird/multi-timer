@@ -24,8 +24,12 @@ Executing a step-by-step guided submission to Apple TestFlight. The AI provides 
 4. ✅ **Step 3**: Configure Xcode project signing (COMPLETED)
    - Automatic signing enabled for all configurations
    - No signing errors
-5. ⏳ **Step 4**: Build and archive in Xcode (IN PROGRESS)
-6. ⏳ **Step 5**: Upload archive to TestFlight
+5. ✅ **Step 4**: Build and archive (COMPLETED)
+   - Fixed CocoaPods integration with `flutter build ios --release`
+   - Archive created successfully in Xcode
+   - Organizer window open with archive ready
+   - Git tag: v4 (tracks source code version)
+6. ⏳ **Step 5**: Upload archive to TestFlight (IN PROGRESS)
 7. ⏳ **Step 6**: Wait for Apple build processing (10-30 minutes)
 8. ⏳ **Step 7**: Invite beta testers in App Store Connect
 
@@ -118,17 +122,18 @@ The code subtracts audio and gong durations from total session time to achieve p
 
 ## Next Immediate Step
 
-**Step 4: Build and Archive in Xcode**
+**Step 5: Upload Archive to TestFlight**
 
 User will:
-1. In Xcode, select build destination: "Any iOS Device (arm64)"
-2. Go to Product menu > Scheme > Edit Scheme
-3. Set Build Configuration to "Release"
-4. Go to Product menu > Archive
-5. Wait for archive process to complete (2-5 minutes)
-6. Organizer window will open showing the archive
+1. In Xcode Organizer window (currently open with new archive)
+2. Select the newest Runner archive
+3. Click "Distribute App" button
+4. Follow upload wizard (simplified process in newer Xcode)
+5. Wait for upload to complete (5-15 minutes depending on connection)
 
-This creates a release build archive that can be uploaded to TestFlight.
+Note: The upload process may be simpler than documented - follow the wizard prompts.
+
+This uploads the app to App Store Connect where Apple will process it for TestFlight.
 
 ## Blockers
 
