@@ -34,9 +34,12 @@ Executing a step-by-step guided submission to Apple TestFlight. The AI provides 
    - Root cause: Missing MinimumOSVersion key in AppFrameworkInfo.plist
    - Fixed by adding MinimumOSVersion = 26.0 to match iOS 26.0 deployment target
    - Commit: 383610b (fix: TestFlight upload failed due to missing MinimumOSVersion)
-7. ⏳ **Step 5b**: Rebuild archive and retry upload (NEXT)
-8. ⏳ **Step 6**: Upload archive to TestFlight
-9. ⏳ **Step 7**: Wait for Apple build processing (10-30 minutes)
+7. ✅ **Step 5b**: Rebuild archive with fix (COMPLETED)
+   - Rebuilt with corrected AppFrameworkInfo.plist
+   - Created new archive in Xcode
+8. ✅ **Step 6**: Upload archive to TestFlight (COMPLETED)
+   - Upload successful! Archive accepted by Apple
+9. ⏳ **Step 7**: Wait for Apple build processing (NEXT - typically 10-30 minutes)
 10. ⏳ **Step 8**: Invite beta testers in App Store Connect
 
 ### Current iOS Configuration
@@ -128,17 +131,21 @@ The code subtracts audio and gong durations from total session time to achieve p
 
 ## Next Immediate Step
 
-**Step 5b: Rebuild Archive and Retry Upload**
+**Step 7: Wait for Apple Build Processing**
 
-After fixing the MinimumOSVersion validation error, user needs to:
+The archive has been successfully uploaded to App Store Connect! Now Apple needs to process it.
 
-1. **On Mac**: Sync the fixed code from Linux VM (rsync or git pull)
-2. **Rebuild**: Run `flutter build ios --release` from project root
-3. **Archive**: In Xcode, Product → Archive
-4. **Upload**: In Organizer window, select new archive → Distribute App → follow wizard
-5. **Wait**: Upload completes (5-15 minutes)
+What happens now:
+1. **Processing**: Apple validates, scans, and prepares the build (10-30 minutes typical)
+2. **Email notification**: You'll receive an email when processing completes
+3. **Status check**: Monitor in App Store Connect → My Apps → Multi Timer für Atempraxis → TestFlight
 
-This creates a new archive with the corrected AppFrameworkInfo.plist that includes the required MinimumOSVersion key.
+What to look for:
+- Build status changes from "Processing" to "Ready to Submit" or "Ready to Test"
+- Any additional warnings or issues flagged by Apple
+- Build number and version visible in TestFlight section
+
+Once processing completes, you can invite your beta testers.
 
 ## Blockers
 
