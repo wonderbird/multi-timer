@@ -86,6 +86,23 @@ To run on an Android emulator:
     *   Select your emulator from the device dropdown in the toolbar.
     *   Click the **Run** button (or press **Shift + F10**).
 
-### Structure
-- `lib/main.dart`: Contains the entire application logic.
-- `assets/gong.mp3`: The alarm sound file.
+### Synchronize Sandboxed Development Environment to Mac
+
+To prevent an ai agent from corrupting my development computer, I run it inside a linux virtual machine. As a consequence, I frequently copy intermediate states of the repository over to my macBook.
+
+I use the following command for checking which files would be transferred:
+
+```shell
+# Set the USER to the account you use on the sandbox
+# Set IPV4_ADDRESS to the ip address of the sandbox
+# Set the MULTI_TIMER_DIR to the directory of the project in the sandbox
+echo "rsync multi-timer from sandbox"; \
+    rsync --dry-run -avz --stats --progress \
+          --exclude='.git' \
+          --filter=':- .gitignore' \
+          --filter=':- .rsyncignore' \
+          $USER@$IPV4_ADDRESS:$MULTI_TIMER_DIR/ \
+          ./
+```
+
+Then I remove the --dry-run parameter to actually perform the transfer.
