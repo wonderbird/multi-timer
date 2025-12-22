@@ -1,0 +1,17 @@
+WAS KANN GETESTET WERDEN?
+
+Bitte teste die grundlegende Funktionalität der App:
+
+• Starte die 20-minütige Atemübung und prüfe, ob alle 7 Abschnitte korrekt ablaufen
+• Achte darauf, ob die deutschen Ansagen vor jedem Abschnitt klar zu hören sind
+• Überprüfe, ob der Gong am Ende jedes Abschnitts ertönt
+• Teste, ob die Fortschrittsanzeige während der Übung sichtbar bleibt
+
+WICHTIGER HINWEIS ZUR BILDSCHIRMSPERRE
+
+Die App schaltet während der Nutzung die automatische Bildschirmsperre aus (zu finden unter: Einstellungen → Anzeige & Helligkeit → Automatische Sperre). Das ist wichtig, damit die 20-minütige Atemübung nicht unterbrochen wird.
+
+⚠️ SICHERHEITSHINWEIS: Bitte denke nach der Nutzung der App daran, die automatische Bildschirmsperre in den Einstellungen wieder einzuschalten, damit dein iPhone geschützt bleibt!
+
+Vielen Dank für deine Hilfe beim Testen!
+
