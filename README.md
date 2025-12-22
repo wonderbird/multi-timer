@@ -1,10 +1,10 @@
 # Multi Timer für Atempraxis
 
-A guided breathing exercise application for iOS that helps users practice a specific therapeutic breathing technique rooted in shamanic and yoga traditions.
+A guided breathing exercise application for iOS that helps users practice a specific meditative breathing technique rooted in shamanic and yoga traditions.
 
 ## Purpose
 
-This app guides users through a structured 20-minute breathing exercise sequence designed to help resolve psychological armors developed in early life stages. The technique uses specific breathing patterns (full body breathing, breath holding, wave breathing, and sensing) to promote emotional well-being and self-healing.
+This app guides users through a structured 20-minute breathing exercise sequence that works with psychological patterns developed in early life stages. The technique uses specific breathing patterns (full body breathing, breath holding, wave breathing, and sensing) to support emotional well-being and personal growth.
 
 ## How It Works
 
