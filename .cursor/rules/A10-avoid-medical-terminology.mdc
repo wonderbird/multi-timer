@@ -1,78 +1,69 @@
 ---
 alwaysApply: true
-description: Avoid medical and therapeutic terminology for regulatory compliance
+description: Avoid medical and therapeutic claims for regulatory compliance
 ---
 
-# Avoid Medical and Therapeutic Terminology
+# Avoid Medical and Therapeutic Claims
 
 ## Regulatory Context
 
-In Germany, medical and therapeutic applications require validation. Non-compliance can result in significant fines. Therefore, this application must NOT be positioned as a medical or therapeutic tool.
+Under German and EU law (Heilmittelwerbegesetz/HWG and EU MDR 2017/745), software becomes a regulated medical device based on its "intended purpose" stated in labeling, documentation, and marketing. Medical devices require CE marking, regulatory approval, and clinical validation. Non-compliance risks significant penalties.
 
-## Prohibited Terms and Phrases
+**Critical principle:** The trigger is not terminology itself, but CLAIMS about:
 
-Avoid using the following types of terms in all textual content:
+- Diagnosing, preventing, monitoring, treating, or alleviating disease
+- Therapeutic or medical benefits
+- Effects on health conditions or symptoms
+- Professional medical use cases
 
-- Medical terminology: "treatment", "therapy", "diagnosis", "patient", "clinical", "medical", "cure", "heal"
-- Therapeutic claims: "therapeutic", "remedial", "rehabilitative", "medicinal"
-- Health claims that imply medical benefits: "treats", "prevents disease", "cures", "relieves symptoms"
-- Professional medical context: "doctor", "physician", "healthcare provider", "prescription", "consultation"
+## Terminology Guide
 
-## Acceptable Alternatives
+Position the app as a wellness/lifestyle tool. Replace medical terms with neutral alternatives:
 
-Instead, use neutral, descriptive language focused on personal practice and traditional techniques:
+| ❌ Avoid | ✅ Use Instead |
+|----------|----------------|
+| patient | user, practitioner |
+| treatment session | session, practice session |
+| therapy, treatment | practice, breathing practice |
+| therapeutic approach | technique, method |
+| health benefits | well-being, personal development |
+| treat | support, guide |
+| medical device | tool, application |
+| breathing therapy | breathing exercise, breathing technique |
+| treatment modality | traditional practice |
+| doctor, physician | (omit or use "guide", "instructor") |
+| diagnosis, cure, heal | (avoid entirely) |
+| clinical, medicinal | traditional, established |
 
-- "user" or "practitioner" instead of "patient"
-- "session" or "practice session" instead of "treatment session"
-- "practice" or "breathing practice" instead of "therapy" or "treatment"
-- "technique" or "method" instead of "therapeutic approach"
-- "well-being" or "personal development" instead of "health" (when in medical context)
-- "support" or "guide" instead of "treat"
-- "tool" or "application" instead of "medical device" or "therapeutic tool"
-- "breathing exercise" or "breathing technique" instead of "breathing therapy"
-- "traditional practice" instead of "treatment modality"
+## App Positioning
 
-## Application-Specific Guidance
-
-For this breathing exercise app:
-
-- **Focus on**: Personal practice, self-exploration, traditional techniques from shamanic and yoga traditions
-- **Frame as**: A timing and guidance tool for a specific breathing exercise sequence
-- **Emphasize**: User autonomy, personal practice, traditional methods
-- **Avoid claiming**: Medical benefits, symptom relief, disease prevention, psychological treatment
+Frame this app as: **A timing and guidance tool for traditional breathing exercise sequences** rooted in shamanic and yoga practices. Emphasize personal practice, self-exploration, user autonomy, and general wellness. Never claim medical benefits, symptom relief, disease prevention, or treatment of conditions.
 
 ## Scope
 
-This rule applies to:
-
-- User interface text and labels
-- Documentation (README, guides, help text)
-- Code comments and documentation strings
-- Error messages and notifications
-- App Store descriptions and marketing materials
-- Variable names and function names where user-facing
-- TestFlight testing instructions
-- Communication with beta testers
+This rule applies to all user-facing content: UI text, documentation, code comments, error messages, App Store materials, variable/function names, TestFlight instructions, and beta communications.
 
 ## Examples
 
-### ❌ Avoid
+**❌ Prohibited (Medical/Therapeutic Claims)**
 
-- "This breathing therapy helps treat psychological issues"
-- "Therapeutic breathing technique for healing trauma"
-- "Use this app for treatment of anxiety"
-- "Clinical breathing exercise for mental health"
-- "Patient progress tracking"
-- "Relieves symptoms of stress"
+"This breathing therapy treats psychological issues" • "Therapeutic technique for healing trauma" • "Use for treatment of anxiety" • "Clinical breathing exercise" • "Patient progress tracking" • "Relieves stress symptoms" • "Prevents panic attacks"
 
-### ✅ Prefer
+**✅ Acceptable (Wellness/Lifestyle Framing)**
 
-- "This breathing technique is used in traditional shamanic practices"
-- "A breathing exercise rooted in yoga traditions"
-- "Use this tool for personal breathing practice"
-- "Traditional breathing technique for self-exploration"
-- "User progress tracking"
-- "Supports personal well-being through breathing practice"
+"Traditional shamanic breathing technique" • "Breathing exercise rooted in yoga traditions" • "Tool for personal breathing practice" • "Technique for self-exploration" • "User progress tracking" • "Supports personal well-being" • "Used by practitioners for general wellness"
+
+## Legal References
+
+Based on:
+
+1. **Heilmittelwerbegesetz (HWG)** - German Act on Advertising in Healthcare: Prohibits misleading medical claims, requires scientific substantiation. [CMS Law](https://cms-lawnow.com/en/media/law-now/files/a3823ab6a3e64a1ab0b77cbaad29962e)
+
+2. **EU Medical Device Regulation (MDR) 2017/745**: Defines medical devices by manufacturer's "intended purpose" claims; applies directly in Germany. [CMS Expert Guide](https://cms.law/en/int/expert-guides/cms-expert-guide-to-advertising-of-medicines-and-medical-devices/germany)
+
+3. **German Court Precedent**: Medical claims require reliable scientific evidence (OLG Frankfurt). [Go With Us Legal](https://www.go-with-us.de/legality-of-advertising-with-statements-on-the-effects-of-medical-treatments/)
+
+4. **BfArM**: Federal Institute for Drugs and Medical Devices - official German regulatory authority. [BfArM](https://www.bfarm.de/EN/)
 
 ## Happiness
 
