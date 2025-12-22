@@ -1,0 +1,79 @@
+---
+alwaysApply: true
+description: Avoid medical and therapeutic terminology for regulatory compliance
+---
+
+# Avoid Medical and Therapeutic Terminology
+
+## Regulatory Context
+
+In Germany, medical and therapeutic applications require validation. Non-compliance can result in significant fines. Therefore, this application must NOT be positioned as a medical or therapeutic tool.
+
+## Prohibited Terms and Phrases
+
+Avoid using the following types of terms in all textual content:
+
+- Medical terminology: "treatment", "therapy", "diagnosis", "patient", "clinical", "medical", "cure", "heal"
+- Therapeutic claims: "therapeutic", "remedial", "rehabilitative", "medicinal"
+- Health claims that imply medical benefits: "treats", "prevents disease", "cures", "relieves symptoms"
+- Professional medical context: "doctor", "physician", "healthcare provider", "prescription", "consultation"
+
+## Acceptable Alternatives
+
+Instead, use neutral, descriptive language focused on personal practice and traditional techniques:
+
+- "user" or "practitioner" instead of "patient"
+- "session" or "practice session" instead of "treatment session"
+- "practice" or "breathing practice" instead of "therapy" or "treatment"
+- "technique" or "method" instead of "therapeutic approach"
+- "well-being" or "personal development" instead of "health" (when in medical context)
+- "support" or "guide" instead of "treat"
+- "tool" or "application" instead of "medical device" or "therapeutic tool"
+- "breathing exercise" or "breathing technique" instead of "breathing therapy"
+- "traditional practice" instead of "treatment modality"
+
+## Application-Specific Guidance
+
+For this breathing exercise app:
+
+- **Focus on**: Personal practice, self-exploration, traditional techniques from shamanic and yoga traditions
+- **Frame as**: A timing and guidance tool for a specific breathing exercise sequence
+- **Emphasize**: User autonomy, personal practice, traditional methods
+- **Avoid claiming**: Medical benefits, symptom relief, disease prevention, psychological treatment
+
+## Scope
+
+This rule applies to:
+
+- User interface text and labels
+- Documentation (README, guides, help text)
+- Code comments and documentation strings
+- Error messages and notifications
+- App Store descriptions and marketing materials
+- Variable names and function names where user-facing
+- TestFlight testing instructions
+- Communication with beta testers
+
+## Examples
+
+### ❌ Avoid
+
+- "This breathing therapy helps treat psychological issues"
+- "Therapeutic breathing technique for healing trauma"
+- "Use this app for treatment of anxiety"
+- "Clinical breathing exercise for mental health"
+- "Patient progress tracking"
+- "Relieves symptoms of stress"
+
+### ✅ Prefer
+
+- "This breathing technique is used in traditional shamanic practices"
+- "A breathing exercise rooted in yoga traditions"
+- "Use this tool for personal breathing practice"
+- "Traditional breathing technique for self-exploration"
+- "User progress tracking"
+- "Supports personal well-being through breathing practice"
+
+## Happiness
+
+⚕️
