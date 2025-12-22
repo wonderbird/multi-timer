@@ -47,24 +47,24 @@ class _TimerScreenState extends State<TimerScreen> {
   double _progress = 0.0;  // Progress from 0.0 to 1.0
   Timer? _progressTimer;
   
-  // Get the asset path prefix based on build mode
-  String get _assetPrefix => kDebugMode ? 'debug/' : 'release/';
-  
-  // Define sessions with wait durations and optional audio files
   late final List<SessionData> _sessions = kDebugMode
       ? [
-          SessionData(9, '${_assetPrefix}session1.mp3', 2300),
-          SessionData(1),
-          SessionData(8, '${_assetPrefix}session2.mp3', 860),
+          SessionData(16, 'release/ganzkoerperatmung.mp3', 8000),
+          SessionData(16, 'release/atem-halten.mp3', 8700),
+          SessionData(16, 'release/ganzkoerperatmung.mp3', 8000),
+          SessionData(16, 'release/atem-halten.mp3', 8700),
+          SessionData(16, 'release/ganzkoerperatmung.mp3', 8000),
+          SessionData(17, 'release/wellenatmen.mp3', 9000),
+          SessionData(13, 'release/nachspueren.mp3', 5600),
         ]
       : [
-          SessionData(300, '${_assetPrefix}ganzkoerperatmung.mp3', 8000),
-          SessionData(60,  '${_assetPrefix}atem-halten.mp3', 8700),
-          SessionData(300, '${_assetPrefix}ganzkoerperatmung.mp3', 8000),
-          SessionData(60,  '${_assetPrefix}atem-halten.mp3', 8700),
-          SessionData(300, '${_assetPrefix}ganzkoerperatmung.mp3', 8000),
-          SessionData(120, '${_assetPrefix}wellenatmen.mp3', 9000),
-          SessionData(60,  '${_assetPrefix}atem-halten.mp3', 8700),
+          SessionData(300, 'release/ganzkoerperatmung.mp3', 8000),
+          SessionData(60,  'release/atem-halten.mp3', 8700),
+          SessionData(300, 'release/ganzkoerperatmung.mp3', 8000),
+          SessionData(60,  'release/atem-halten.mp3', 8700),
+          SessionData(300, 'release/ganzkoerperatmung.mp3', 8000),
+          SessionData(120, 'release/wellenatmen.mp3', 9000),
+          SessionData(60,  'release/nachspueren.mp3', 5600),
         ];
 
   @override
@@ -81,7 +81,7 @@ class _TimerScreenState extends State<TimerScreen> {
   }
 
   Future<void> _playAudioAndWait(String audioPath) async {
-    // CRITICAL FIX: Stop any previous playback to ensure clean state
+    // Stop any previous playback to ensure clean state
     await _player.stop();
     
     final completer = Completer<void>();
@@ -114,15 +114,10 @@ class _TimerScreenState extends State<TimerScreen> {
     debugPrint('Total duration: ${totalDuration}ms (${(totalDuration / 1000).toStringAsFixed(1)}s)');
     final startTime = DateTime.now();
     
-    // Update progress every 100ms
     _progressTimer = Timer.periodic(const Duration(milliseconds: 500), (timer) {
       final elapsed = DateTime.now().difference(startTime).inMilliseconds;
       setState(() {
         _progress = (elapsed / totalDuration).clamp(0.0, 1.0);
-        final elapsedSec = (elapsed / 1000).toStringAsFixed(3).padLeft(7, ' ');
-        final totalSec = (totalDuration / 1000).toStringAsFixed(3).padLeft(7, ' ');
-        debugPrint('Elapsed: ${elapsedSec}s, Total: ${totalSec}s');
-        debugPrint('Progress: ${_progress.toStringAsFixed(2)}');
       });
       
       if (_progress >= 1.0) {
