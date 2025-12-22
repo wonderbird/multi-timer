@@ -45,14 +45,27 @@
 
 ### TestFlight Deployment 🎯 (Current Focus)
 
-- ⏳ Create App Store Connect app record
-- ⏳ Configure unique bundle identifier
-- ⏳ Setup distribution code signing
-- ⏳ Verify app icon requirements
-- ⏳ Build and archive in Xcode
-- ⏳ Upload to TestFlight
-- ⏳ Add beta testers (wife and friend)
-- ⏳ Document screen lock workaround for testers
+**Guided Manual Submission Process Active**
+
+- ✅ Step 0: Document TestFlight plan in memory bank
+- ✅ Step 1: Create App Store Connect app record
+  - Registered bundle ID: systems.boos.multiTimer
+  - Created app: "Multi Timer für Atempraxis"
+- ✅ Step 2: Setup distribution certificate in Xcode
+  - Apple Distribution certificate confirmed
+- ✅ Step 3: Configure Xcode project signing
+  - Automatic signing enabled, no errors
+- ⏳ Step 4: Build and archive in Xcode (IN PROGRESS)
+- ⏳ Step 5: Upload archive to TestFlight
+- ⏳ Step 6: Wait for Apple build processing
+- ⏳ Step 7: Invite beta testers (2 friends)
+
+**Configuration Completed:**
+- ✅ Bundle identifier: systems.boos.multiTimer (registered)
+- ✅ App Store Connect record: "Multi Timer für Atempraxis"
+- ✅ App icons: Complete set including 1024x1024
+- ✅ Local display name: "Multi Timer"
+- ✅ Version: 1.0.0+1
 
 ### Future Enhancements ⏸️ (Pending Beta Feedback)
 
@@ -70,7 +83,11 @@
 
 **Last Completed**: Added nachspüren (sensing) session to complete the 7-session breathing sequence (commit 3ee22db)
 
-**Next Immediate Task**: Configure iOS project for TestFlight submission
+**Next Immediate Task**: Step 4 - User builds and archives in Xcode
+
+**Session Pattern**: AI provides one instruction at a time; user executes on Mac; AI updates memory bank after each completed step
+
+**Note**: App Store Connect name is "Multi Timer für Atempraxis" (original "Multi Timer" was taken)
 
 **Blockers**: None
 

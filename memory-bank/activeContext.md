@@ -8,14 +8,51 @@ Enable two beta testers (friends) to install and test the breathing exercise app
 
 ## Current Focus
 
-Preparing the app for first-time TestFlight deployment including:
+**TestFlight Submission - Guided Manual Process**
 
-1. App Store Connect setup (first time)
-2. iOS project configuration for release
-3. App icon and metadata preparation
-4. Build and archive creation
-5. Upload to TestFlight
-6. Beta tester invitation
+Executing a step-by-step guided submission to Apple TestFlight. The AI provides instructions one at a time for manual execution on Mac, with memory bank updates after each step to enable session resumption if interrupted.
+
+### TestFlight Submission Steps
+
+1. ✅ **Step 0**: Document plan in memory bank (COMPLETED)
+2. ✅ **Step 1**: Create app record in App Store Connect (COMPLETED)
+   - Registered bundle ID: systems.boos.multiTimer
+   - Created app record with name: "Multi Timer für Atempraxis"
+   - Primary Category: Health & Fitness
+3. ✅ **Step 2**: Set up distribution certificate in Xcode (COMPLETED)
+   - Apple Distribution certificate confirmed
+4. ✅ **Step 3**: Configure Xcode project signing (COMPLETED)
+   - Automatic signing enabled for all configurations
+   - No signing errors
+5. ⏳ **Step 4**: Build and archive in Xcode (IN PROGRESS)
+6. ⏳ **Step 5**: Upload archive to TestFlight
+7. ⏳ **Step 6**: Wait for Apple build processing (10-30 minutes)
+8. ⏳ **Step 7**: Invite beta testers in App Store Connect
+
+### Current iOS Configuration
+
+- Bundle identifier: `systems.boos.multiTimer` (registered in Apple Developer portal)
+- App Store Connect name: "Multi Timer für Atempraxis"
+- Local display name: "Multi Timer" (in Info.plist)
+- Version: 1.0.0+1
+- App icons: Complete set including 1024x1024 for App Store
+- Location: `ios/Runner/Assets.xcassets/AppIcon.appiconset/`
+
+### Workflow Pattern
+
+Each step follows this pattern:
+1. AI provides specific instruction
+2. User executes on Mac
+3. User reports result
+4. AI updates memory bank with progress
+5. AI provides next instruction
+
+### Session Continuity
+
+If session is interrupted, user can say "follow your custom instructions" and AI will:
+1. Read memory bank
+2. Identify completed steps
+3. Continue from next uncompleted step
 
 ## Recent Changes
 
@@ -79,17 +116,19 @@ Each session duration accounts for:
 
 The code subtracts audio and gong durations from total session time to achieve precise timing.
 
-## Next Immediate Steps
+## Next Immediate Step
 
-1. Verify Xcode project configuration
-2. Update bundle identifier for App Store distribution
-3. Configure code signing with distribution certificate
-4. Create app icon set if not complete
-5. Create app record in App Store Connect
-6. Build and archive in Xcode
-7. Upload to TestFlight
-8. Add beta testers
-9. Document screen lock workaround for testers
+**Step 4: Build and Archive in Xcode**
+
+User will:
+1. In Xcode, select build destination: "Any iOS Device (arm64)"
+2. Go to Product menu > Scheme > Edit Scheme
+3. Set Build Configuration to "Release"
+4. Go to Product menu > Archive
+5. Wait for archive process to complete (2-5 minutes)
+6. Organizer window will open showing the archive
+
+This creates a release build archive that can be uploaded to TestFlight.
 
 ## Blockers
 
