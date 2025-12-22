@@ -39,8 +39,10 @@ Executing a step-by-step guided submission to Apple TestFlight. The AI provides 
    - Created new archive in Xcode
 8. ✅ **Step 6**: Upload archive to TestFlight (COMPLETED)
    - Upload successful! Archive accepted by Apple
-9. ⏳ **Step 7**: Wait for Apple build processing (NEXT - typically 10-30 minutes)
-10. ⏳ **Step 8**: Invite beta testers in App Store Connect
+9. ✅ **Step 7**: Wait for Apple build processing (COMPLETED)
+   - Processing completed successfully
+   - Build is now ready for testing
+10. ⏳ **Step 8**: Invite beta testers in App Store Connect (NEXT)
 
 ### Current iOS Configuration
 
@@ -131,21 +133,26 @@ The code subtracts audio and gong durations from total session time to achieve p
 
 ## Next Immediate Step
 
-**Step 7: Wait for Apple Build Processing**
+**Step 8: Invite Beta Testers**
 
-The archive has been successfully uploaded to App Store Connect! Now Apple needs to process it.
+The build is processed and ready! Now you can invite your 2 beta testers (friends).
 
-What happens now:
-1. **Processing**: Apple validates, scans, and prepares the build (10-30 minutes typical)
-2. **Email notification**: You'll receive an email when processing completes
-3. **Status check**: Monitor in App Store Connect → My Apps → Multi Timer für Atempraxis → TestFlight
+Instructions:
+1. **Open App Store Connect**: https://appstoreconnect.apple.com
+2. **Navigate**: My Apps → "Multi Timer für Atempraxis" → TestFlight tab
+3. **Select Build**: Confirm the build (1.0.0+1) is visible and ready
+4. **Add Testers**:
+   - Click "Internal Testing" or "External Testing" (External is simpler for friends)
+   - Click "Add Testers" or create a new group
+   - Enter email addresses of your 2 beta testers
+   - Optionally add a welcome message
+5. **Send Invitations**: Click to send invite emails
+6. **Testers Receive**:
+   - Email with TestFlight invitation link
+   - Instructions to download TestFlight app
+   - Link to install Multi Timer beta
 
-What to look for:
-- Build status changes from "Processing" to "Ready to Submit" or "Ready to Test"
-- Any additional warnings or issues flagged by Apple
-- Build number and version visible in TestFlight section
-
-Once processing completes, you can invite your beta testers.
+Note: For External Testing, Apple may require you to add testing information (what testers should test). Keep it simple - "Test the breathing exercise sequence with audio guidance."
 
 ## Blockers
 
