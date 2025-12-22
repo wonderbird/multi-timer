@@ -1,20 +1,20 @@
-# Multi Timer für Atempraxis
+# Multi Timer für Atemübungen
 
-Eine geführte Atemübungs-Anwendung für iOS, die Nutzern hilft, eine spezifische meditative Atemtechnik zu praktizieren, die in schamanischen und Yoga-Traditionen verwurzelt ist.
+Eine App für iOS, die dich durch eine 20-minütige Atemübung führt. Die Atemtechnik kommt aus schamanischen und Yoga-Traditionen.
 
-## Zweck
+## Wofür ist die App?
 
-Diese App führt Nutzer durch eine strukturierte 20-minütige Atemübungssequenz, die mit psychologischen Mustern arbeitet, die in frühen Lebensphasen entwickelt wurden. Die Technik verwendet spezifische Atemmuster (Ganzkörperatmung, Atem halten, Wellenatmen und Nachspüren), um emotionales Wohlbefinden und persönliches Wachstum zu unterstützen.
+Die App hilft dir, eine bestimmte Atemübung zu machen. Die Übung dauert 20 Minuten und besteht aus verschiedenen Atemmustern. Diese Technik kann dir helfen, dich besser zu fühlen und dich persönlich weiterzuentwickeln.
 
-## Funktionsweise
+## Wie funktioniert die App?
 
-### Einfache Benutzeroberfläche
+### Einfache Bedienung
 
-Die App bietet eine minimale, ablenkungsfreie Benutzeroberfläche mit einem einzigen "Start"-Button. Keine Konfiguration oder Lernkurve erforderlich.
+Die App ist sehr einfach. Du siehst nur einen "Start"-Button. Du musst nichts einstellen oder lernen.
 
-### 7-Sitzungen geführte Sequenz
+### 7 Übungsabschnitte
 
-Wenn der Nutzer "Start" antippt, führt die App eine feste Sequenz von 7 zeitgesteuerten Atemsitzungen aus:
+Wenn du auf "Start" drückst, startet die App automatisch diese 7 Abschnitte:
 
 1. **Ganzkörperatmung** - 5 Minuten
 2. **Atem Halten** - 1 Minute
@@ -26,24 +26,24 @@ Wenn der Nutzer "Start" antippt, führt die App eine feste Sequenz von 7 zeitges
 
 **Gesamtdauer**: 20 Minuten
 
-### Audio-Führung
+### Anleitung mit Ton
 
-- Vor jeder Sitzung spielt die App eine kurze deutschsprachige Audio-Anweisung ab, die die Technik benennt
-- Am Ende jeder Sitzung markiert ein Gong-Klang den Übergang
-- Audio leitet die Praktizierenden, ohne dass sie auf den Bildschirm schauen müssen
+- Vor jedem Abschnitt hörst du eine kurze Ansage auf Deutsch
+- Am Ende jedes Abschnitts ertönt ein Gong
+- Du musst nicht auf den Bildschirm schauen, der Ton führt dich durch die Übung
 
-### Absichtlich schwarzer Bildschirm
+### Der Bildschirm wird schwarz
 
-**Wichtig für die App-Prüfung**: Der Bildschirm wird während der Übungssequenz *absichtlich* schwarz, nicht als Fehler. Dieses bewusste Verhalten:
+**Wichtig**: Der Bildschirm wird während der Übung schwarz. Das ist kein Fehler, sondern gewollt. Warum?
 
-- Minimiert visuelle Ablenkungen während der Praxis
-- Hilft Nutzern, sich auf die innere Atemerfahrung zu konzentrieren
-- Reduziert den Batterieverbrauch
-- Enthält eine dezente Fortschrittsanzeige für Zeitbewusstsein
+- Du wirst nicht durch Bilder abgelenkt
+- Du kannst dich besser auf deine Atmung konzentrieren
+- Der Akku hält länger
+- Eine kleine Anzeige zeigt dir, wie weit du bist
 
-Der schwarze Bildschirm ist ein Kernmerkmal der meditativen Praxis und ermöglicht es den Praktizierenden, sich vollständig auf ihre Atmung zu konzentrieren, ohne externe visuelle Reize.
+Der schwarze Bildschirm hilft dir, bei der Sache zu bleiben und nur auf deinen Atem zu achten.
 
-### Automatischer Ablauf
+### Alles läuft automatisch
 
-Die App durchläuft automatisch alle Sitzungen, spielt Audio-Hinweise und Gongs zu den passenden Zeiten ab. Nach Abschluss der letzten Sitzung kehrt die App zum Startbildschirm zurück.
+Die App wechselt automatisch zwischen den Abschnitten. Du hörst die Ansagen und den Gong zur richtigen Zeit. Nach den 20 Minuten kommst du zurück zum Start-Bildschirm.
 
