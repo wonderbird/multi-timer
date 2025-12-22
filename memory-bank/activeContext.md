@@ -29,9 +29,15 @@ Executing a step-by-step guided submission to Apple TestFlight. The AI provides 
    - Archive created successfully in Xcode
    - Organizer window open with archive ready
    - Git tag: v4 (tracks source code version)
-6. ⏳ **Step 5**: Upload archive to TestFlight (IN PROGRESS)
-7. ⏳ **Step 6**: Wait for Apple build processing (10-30 minutes)
-8. ⏳ **Step 7**: Invite beta testers in App Store Connect
+6. ✅ **Step 5a**: First upload attempt - validation failure (COMPLETED)
+   - Upload failed with 3 validation errors
+   - Root cause: Missing MinimumOSVersion key in AppFrameworkInfo.plist
+   - Fixed by adding MinimumOSVersion = 26.0 to match iOS 26.0 deployment target
+   - Commit: 383610b (fix: TestFlight upload failed due to missing MinimumOSVersion)
+7. ⏳ **Step 5b**: Rebuild archive and retry upload (NEXT)
+8. ⏳ **Step 6**: Upload archive to TestFlight
+9. ⏳ **Step 7**: Wait for Apple build processing (10-30 minutes)
+10. ⏳ **Step 8**: Invite beta testers in App Store Connect
 
 ### Current iOS Configuration
 
@@ -122,18 +128,17 @@ The code subtracts audio and gong durations from total session time to achieve p
 
 ## Next Immediate Step
 
-**Step 5: Upload Archive to TestFlight**
+**Step 5b: Rebuild Archive and Retry Upload**
 
-User will:
-1. In Xcode Organizer window (currently open with new archive)
-2. Select the newest Runner archive
-3. Click "Distribute App" button
-4. Follow upload wizard (simplified process in newer Xcode)
-5. Wait for upload to complete (5-15 minutes depending on connection)
+After fixing the MinimumOSVersion validation error, user needs to:
 
-Note: The upload process may be simpler than documented - follow the wizard prompts.
+1. **On Mac**: Sync the fixed code from Linux VM (rsync or git pull)
+2. **Rebuild**: Run `flutter build ios --release` from project root
+3. **Archive**: In Xcode, Product → Archive
+4. **Upload**: In Organizer window, select new archive → Distribute App → follow wizard
+5. **Wait**: Upload completes (5-15 minutes)
 
-This uploads the app to App Store Connect where Apple will process it for TestFlight.
+This creates a new archive with the corrected AppFrameworkInfo.plist that includes the required MinimumOSVersion key.
 
 ## Blockers
 
