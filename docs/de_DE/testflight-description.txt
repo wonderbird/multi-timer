@@ -13,7 +13,7 @@ Damit die 20-minütige Atemübung nicht unterbrochen wird, musst du vor dem Star
 
 Einstellungen → Anzeige & Helligkeit → Automatische Sperre → "Nie"
 
-⚠️ SICHERHEITSHINWEIS: Bitte denke nach der Nutzung der App unbedingt daran, die automatische Bildschirmsperre in den Einstellungen wieder einzuschalten, damit dein iPhone geschützt bleibt!
+SICHERHEITSHINWEIS: Bitte denke nach der Nutzung der App unbedingt daran, die automatische Bildschirmsperre in den Einstellungen wieder einzuschalten, damit dein iPhone geschützt bleibt!
 
 Vielen Dank für deine Hilfe beim Testen!
 
