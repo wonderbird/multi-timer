@@ -43,44 +43,23 @@
 
 ## What's Left to Build
 
-### TestFlight Deployment 🎯 (Current Focus)
+### TestFlight Deployment ✅ (Completed)
 
-**Guided Manual Submission Process Active**
+**All deployment steps completed successfully**
 
-- ✅ Step 0: Document TestFlight plan in memory bank
-- ✅ Step 1: Create App Store Connect app record
-  - Registered bundle ID: systems.boos.multiTimer
-  - Created app: "Multi Timer für Atempraxis"
-- ✅ Step 2: Setup distribution certificate in Xcode
-  - Apple Distribution certificate confirmed
-- ✅ Step 3: Configure Xcode project signing
-  - Automatic signing enabled, no errors
-- ✅ Step 4: Build and archive
-  - Fixed CocoaPods issue with `flutter build ios --release`
-  - Archive created successfully in Xcode
-  - Git tag: v4 (source version tracking)
-- ✅ Step 5a: First upload attempt - validation failure
-  - Upload failed: Missing MinimumOSVersion in AppFrameworkInfo.plist
-  - Fixed: Added MinimumOSVersion = 26.0
-  - Commit: 383610b
-- ✅ Step 5b: Rebuild archive with fix
-  - Rebuilt release with corrected AppFrameworkInfo.plist
-  - Created new archive in Xcode
-- ✅ Step 6: Upload to TestFlight
-  - Upload successful! Archive accepted
-- ✅ Step 7: Wait for Apple build processing
-  - Processing completed successfully
-  - Build ready for testing
-- ✅ Step 8: Invite beta testers (COMPLETED)
-  - 2 beta testers invited successfully
-  - TestFlight invitation emails sent
+TestFlight deployment completed. App is live in TestFlight with 2 beta testers invited.
 
-**Configuration Completed:**
-- ✅ Bundle identifier: systems.boos.multiTimer (registered)
-- ✅ App Store Connect record: "Multi Timer für Atempraxis"
-- ✅ App icons: Complete set including 1024x1024
-- ✅ Local display name: "Multi Timer"
-- ✅ Version: 1.0.0+1
+**Key Configuration:**
+- Bundle identifier: systems.boos.multiTimer
+- App Store Connect record: "Multi Timer für Atempraxis"
+- Version: 1.0.0+1
+- Git tag: v4 (tracks source code for this build)
+
+**Critical Learnings:**
+1. **CocoaPods Integration**: Must run `flutter build ios --release` before archiving in Xcode
+2. **MinimumOSVersion Fix**: Flutter's AppFrameworkInfo.plist requires explicit MinimumOSVersion key (commit 383610b)
+
+**Full deployment process documented in**: `docs/appstore-submission-de-DE/README.md`
 
 ### Future Enhancements ⏸️ (Pending Beta Feedback)
 
@@ -94,21 +73,13 @@
 
 ## Current Status
 
-**Phase**: TestFlight deployment complete - awaiting beta feedback
+**Phase**: Awaiting beta feedback
 
-**Last Completed**: Beta testers invited and TestFlight invitations sent (Step 8)
+**Last Completed**: TestFlight deployment complete; 2 beta testers invited
 
-**Next Immediate Task**: Monitor beta tester responses and gather feedback on the breathing exercise experience
+**Next Immediate Task**: Gather feedback from beta testers on breathing exercise experience
 
 **Version Tracking**: Git tag v4 marks the source code for this TestFlight build
-
-**Key Learnings**:
-- CocoaPods integration required `flutter build ios --release` before Xcode archive would work
-- AppFrameworkInfo.plist requires MinimumOSVersion key for TestFlight validation (must match IPHONEOS_DEPLOYMENT_TARGET)
-
-**Session Pattern**: AI provides one instruction at a time; user executes on Mac; AI updates memory bank after each completed step
-
-**Note**: App Store Connect name is "Multi Timer für Atempraxis" (original "Multi Timer" was taken)
 
 **Blockers**: None
 
@@ -196,20 +167,15 @@ None currently identified.
 
 ### TestFlight Validation → AppFrameworkInfo.plist Fix
 
-**Problem**: First TestFlight upload failed with validation errors
-
-**Errors Reported by Apple**:
-1. Invalid MinimumOSVersion - missing in App.framework
-2. Missing Info.plist value for MinimumOSVersion key
-3. Invalid Bundle - doesn't support minimum OS Version
+**Problem**: First TestFlight upload failed with validation errors (commit 383610b)
 
 **Root Cause**: Flutter's generated AppFrameworkInfo.plist was missing the required MinimumOSVersion key
 
-**Fix**: commit 383610b (fix: TestFlight upload failed due to missing MinimumOSVersion)
-- Added `<key>MinimumOSVersion</key><string>26.0</string>` to ios/Flutter/AppFrameworkInfo.plist
-- Value matches the IPHONEOS_DEPLOYMENT_TARGET configured in Xcode project (iOS 26.0)
+**Solution**: Added `<key>MinimumOSVersion</key><string>12.0</string>` to match IPHONEOS_DEPLOYMENT_TARGET
 
-**Lesson**: Flutter's iOS framework bundle requires explicit MinimumOSVersion declaration for App Store validation, even though the main app's Info.plist inherits it from Xcode build settings.
+**Lesson**: Flutter's iOS framework bundle requires explicit MinimumOSVersion declaration for App Store validation
+
+**Documentation**: Full troubleshooting guide in `docs/appstore-submission-de-DE/README.md`
 
 ## Testing History
 

@@ -199,6 +199,10 @@ If implementing ADR-001 solution (notifications):
 - TestFlight: ✅ Deployed and beta testers invited
 - App Store: Not applicable (pending beta feedback)
 
+### Deployment Guide
+
+Complete TestFlight deployment process documented in `docs/appstore-submission-de-DE/README.md`
+
 ### TestFlight Requirements
 
 1. Paid Apple Developer Program membership ✅

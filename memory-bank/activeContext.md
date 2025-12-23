@@ -8,43 +8,19 @@ Enable two beta testers (friends) to install and test the breathing exercise app
 
 ## Current Focus
 
-**TestFlight Submission - Guided Manual Process**
+**TestFlight Deployment - Complete**
 
-Executing a step-by-step guided submission to Apple TestFlight. The AI provides instructions one at a time for manual execution on Mac, with memory bank updates after each step to enable session resumption if interrupted.
+TestFlight deployment completed successfully. All 8 steps completed:
+- ✅ App Store Connect record created
+- ✅ Distribution certificate configured
+- ✅ Xcode project signing set up
+- ✅ Build and archive created (with CocoaPods fix)
+- ✅ MinimumOSVersion validation issue resolved
+- ✅ Archive uploaded to TestFlight
+- ✅ Apple build processing completed
+- ✅ Beta testers invited
 
-### TestFlight Submission Steps
-
-1. ✅ **Step 0**: Document plan in memory bank (COMPLETED)
-2. ✅ **Step 1**: Create app record in App Store Connect (COMPLETED)
-   - Registered bundle ID: systems.boos.multiTimer
-   - Created app record with name: "Multi Timer für Atempraxis"
-   - Primary Category: Health & Fitness
-3. ✅ **Step 2**: Set up distribution certificate in Xcode (COMPLETED)
-   - Apple Distribution certificate confirmed
-4. ✅ **Step 3**: Configure Xcode project signing (COMPLETED)
-   - Automatic signing enabled for all configurations
-   - No signing errors
-5. ✅ **Step 4**: Build and archive (COMPLETED)
-   - Fixed CocoaPods integration with `flutter build ios --release`
-   - Archive created successfully in Xcode
-   - Organizer window open with archive ready
-   - Git tag: v4 (tracks source code version)
-6. ✅ **Step 5a**: First upload attempt - validation failure (COMPLETED)
-   - Upload failed with 3 validation errors
-   - Root cause: Missing MinimumOSVersion key in AppFrameworkInfo.plist
-   - Fixed by adding MinimumOSVersion = 26.0 to match iOS 26.0 deployment target
-   - Commit: 383610b (fix: TestFlight upload failed due to missing MinimumOSVersion)
-7. ✅ **Step 5b**: Rebuild archive with fix (COMPLETED)
-   - Rebuilt with corrected AppFrameworkInfo.plist
-   - Created new archive in Xcode
-8. ✅ **Step 6**: Upload archive to TestFlight (COMPLETED)
-   - Upload successful! Archive accepted by Apple
-9. ✅ **Step 7**: Wait for Apple build processing (COMPLETED)
-   - Processing completed successfully
-   - Build is now ready for testing
-10. ✅ **Step 8**: Invite beta testers in App Store Connect (COMPLETED)
-   - Beta testers invited successfully
-   - Testers will receive TestFlight invitation emails
+**Full deployment process documented in**: `docs/appstore-submission-de-DE/README.md`
 
 ### Current iOS Configuration
 
@@ -53,23 +29,7 @@ Executing a step-by-step guided submission to Apple TestFlight. The AI provides 
 - Local display name: "Multi Timer" (in Info.plist)
 - Version: 1.0.0+1
 - App icons: Complete set including 1024x1024 for App Store
-- Location: `ios/Runner/Assets.xcassets/AppIcon.appiconset/`
-
-### Workflow Pattern
-
-Each step follows this pattern:
-1. AI provides specific instruction
-2. User executes on Mac
-3. User reports result
-4. AI updates memory bank with progress
-5. AI provides next instruction
-
-### Session Continuity
-
-If session is interrupted, user can say "follow your custom instructions" and AI will:
-1. Read memory bank
-2. Identify completed steps
-3. Continue from next uncompleted step
+- Git tag: v4 (tracks this TestFlight build source code)
 
 ## Recent Changes
 
@@ -135,12 +95,7 @@ The code subtracts audio and gong durations from total session time to achieve p
 
 ## Next Immediate Step
 
-**TestFlight Deployment Complete - Awaiting Beta Feedback**
-
-All TestFlight setup steps are complete:
-- ✅ Build uploaded and processed by Apple
-- ✅ Beta testers invited (2 testers)
-- ✅ TestFlight invitations sent
+**Awaiting Beta Feedback**
 
 Next actions:
 1. **Monitor Tester Responses**: Wait for beta testers to receive invitation emails and install TestFlight
