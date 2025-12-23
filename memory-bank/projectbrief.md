@@ -38,11 +38,11 @@ Multi Timer is a Flutter mobile application designed to guide users through a sp
 
 ## Success Criteria
 
-1. App successfully deploys to Apple TestFlight
-2. Two beta testers (friends) can install and use the app
-3. Complete 20-minute breathing exercise sequence executes correctly with screen unlocked
-4. Audio instructions and gongs play at appropriate times
-5. Gather user feedback to inform future development decisions
+1. ✅ App successfully deploys to Apple TestFlight
+2. ⏳ Two beta testers (friends) can install and use the app
+3. ⏳ Complete 20-minute breathing exercise sequence executes correctly with screen unlocked
+4. ⏳ Audio instructions and gongs play at appropriate times
+5. ⏳ Gather user feedback to inform future development decisions
 
 ## Target Audience
 

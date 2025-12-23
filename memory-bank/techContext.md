@@ -196,18 +196,18 @@ If implementing ADR-001 solution (notifications):
 ### Current Status
 
 - Development builds: Working on iPhone via Xcode
-- TestFlight: Not yet configured
-- App Store: Not applicable
+- TestFlight: ✅ Deployed and beta testers invited
+- App Store: Not applicable (pending beta feedback)
 
 ### TestFlight Requirements
 
 1. Paid Apple Developer Program membership ✅
-2. App Store Connect app record ⏳ (to be created)
-3. Distribution certificate and provisioning profile ⏳
-4. Unique bundle identifier ⏳
-5. App icon (1024x1024) ✅ (appears to be present)
+2. App Store Connect app record ✅ ("Multi Timer für Atempraxis")
+3. Distribution certificate and provisioning profile ✅
+4. Unique bundle identifier ✅ (systems.boos.multiTimer)
+5. App icon (1024x1024) ✅
 6. Privacy policy URL (if app collects data) ✅ (no data collection)
-7. Export compliance information ⏳ (to be determined)
+7. Export compliance information ✅ (handled during upload)
 
 ## Tool Usage Patterns
 

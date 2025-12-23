@@ -42,7 +42,9 @@ Executing a step-by-step guided submission to Apple TestFlight. The AI provides 
 9. ✅ **Step 7**: Wait for Apple build processing (COMPLETED)
    - Processing completed successfully
    - Build is now ready for testing
-10. ⏳ **Step 8**: Invite beta testers in App Store Connect (NEXT)
+10. ✅ **Step 8**: Invite beta testers in App Store Connect (COMPLETED)
+   - Beta testers invited successfully
+   - Testers will receive TestFlight invitation emails
 
 ### Current iOS Configuration
 
@@ -133,26 +135,26 @@ The code subtracts audio and gong durations from total session time to achieve p
 
 ## Next Immediate Step
 
-**Step 8: Invite Beta Testers**
+**TestFlight Deployment Complete - Awaiting Beta Feedback**
 
-The build is processed and ready! Now you can invite your 2 beta testers (friends).
+All TestFlight setup steps are complete:
+- ✅ Build uploaded and processed by Apple
+- ✅ Beta testers invited (2 testers)
+- ✅ TestFlight invitations sent
 
-Instructions:
-1. **Open App Store Connect**: https://appstoreconnect.apple.com
-2. **Navigate**: My Apps → "Multi Timer für Atempraxis" → TestFlight tab
-3. **Select Build**: Confirm the build (1.0.0+1) is visible and ready
-4. **Add Testers**:
-   - Click "Internal Testing" or "External Testing" (External is simpler for friends)
-   - Click "Add Testers" or create a new group
-   - Enter email addresses of your 2 beta testers
-   - Optionally add a welcome message
-5. **Send Invitations**: Click to send invite emails
-6. **Testers Receive**:
-   - Email with TestFlight invitation link
-   - Instructions to download TestFlight app
-   - Link to install Multi Timer beta
-
-Note: For External Testing, Apple may require you to add testing information (what testers should test). Keep it simple - "Test the breathing exercise sequence with audio guidance."
+Next actions:
+1. **Monitor Tester Responses**: Wait for beta testers to receive invitation emails and install TestFlight
+2. **First Beta Test**: Testers install app and complete 20-minute breathing sequence
+3. **Gather Feedback**: Collect user feedback on:
+   - Overall experience with the breathing sequence
+   - Audio instruction clarity and timing
+   - Progress bar usefulness
+   - Screen lock workaround burden
+   - Any bugs or issues encountered
+4. **Evaluate Next Steps**: Based on feedback, decide:
+   - Whether to fix screen lock issue (ADR-001)
+   - Whether to pursue public App Store release
+   - What improvements/features to prioritize
 
 ## Blockers
 
