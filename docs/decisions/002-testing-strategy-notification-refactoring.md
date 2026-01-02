@@ -411,6 +411,73 @@ Leverage third-party testing infrastructure such as Firebase Test Lab, BrowserSt
 - Sauce Labs
 - Appium (open source framework, self-hosted)
 
+## Technical Considerations
+
+### Current Testing Infrastructure
+
+The app currently has no automated tests. The test/ directory exists but contains only placeholder files from Flutter project scaffolding.
+
+### Testing Framework Capabilities
+
+**Flutter Testing Framework:**
+
+- **Unit tests**: Test individual functions and classes in isolation
+- **Widget tests**: Test widgets and their interactions in a simulated environment
+- **Integration tests**: Test complete app on a real device or emulator
+
+**Platform APIs for Notification Verification:**
+
+Integration tests can programmatically inspect scheduled notifications on both iOS and Android:
+
+```dart
+// Example: Verify notifications are scheduled correctly
+final pendingNotifications = await notificationPlugin.pendingNotificationRequests();
+expect(pendingNotifications.length, 7);
+expect(pendingNotifications[0].scheduledTime, expectedTime);
+expect(pendingNotifications[0].soundFile, 'gong.aiff');
+```
+
+This allows automated verification of notification scheduling without requiring screen lock.
+
+### Debug vs Release Mode Testing
+
+The app uses `kDebugMode` to switch timing configurations:
+
+- **Debug mode**: 16-17 second sessions (~2 minutes total)
+- **Release mode**: Full durations (300-60-300-60-300-120-60 seconds = 20 minutes total)
+
+Integration tests should use debug mode for reasonable execution time while still testing real behavior.
+
+### Testing Testability Gap
+
+**Critical limitation**: Automated tests cannot verify the primary feature (notifications firing when screen is locked). This is a fundamental platform constraint - test frameworks cannot programmatically lock the device screen and verify notification delivery.
+
+**Implication**: Manual testing remains essential for validating the core requirement regardless of which automated testing option is chosen.
+
+### Manual Testing Requirements
+
+All testing strategies must be supplemented with manual verification:
+
+- Lock screen during first 5-minute session
+- Verify gong plays at 5 minutes (via notification)
+- Verify all 7 gongs play at correct times
+- Verify instruction audio still plays when unlocking
+- Test cancellation mid-sequence
+- Test restarting sequence multiple times
+- Verify battery usage over full 20-minute sequence
+
+### Testing Timeline Estimates
+
+- Option 1 (Unit Tests): 2-3 hours setup
+- Option 2 (Widget Tests): 3-4 hours setup
+- Option 3 (Integration Tests): 2-3 hours setup
+- Option 4 (Hybrid Pyramid): 5-6 hours setup
+- Option 5 (Contract Tests): 6-8 hours setup (includes code restructuring)
+- Option 6 (Golden Tests): 3-4 hours setup
+- Option 7 (Smoke + Manual): 30 minutes setup
+- Option 8 (No Testing): 0 hours
+- Option 9 (Testing Services): 4-6 hours setup + ongoing subscription costs
+
 ## Decision
 
 [To be decided by stakeholder]
@@ -425,157 +492,13 @@ Leverage third-party testing infrastructure such as Firebase Test Lab, BrowserSt
 
 ## Implementation Notes
 
-### Top Recommendations
+**Recommended Option**: Based on the comparison matrix and decision drivers, **Option 3 (Integration Tests)** or **Option 4 (Hybrid Pyramid)** are recommended depending on time constraints.
 
-**For time-constrained scenario (2-3 hours):**
+**For time-constrained (2-3 hours)**: Choose Option 3. Write 2-5 integration tests covering critical paths. Verify notification scheduling via platform APIs. Supplement with manual testing checklist for locked-screen behavior.
 
-- Choose **Option 3 (Integration Tests)**
-- Write 2-5 integration tests covering critical paths
-- Verify notification scheduling via platform APIs
-- Use manual checklist for locked-screen testing
-- Provides 20/25 coverage score - sufficient safety net
+**For comprehensive coverage (5-6 hours)**: Choose Option 4. Combine unit tests (fast feedback), widget tests (UI verification), and integration tests (end-to-end confidence). Standard industry approach with best coverage (21/25).
 
-**For comprehensive coverage (5-6 hours):**
+**Advanced approach**: Consider combining Option 4 with Option 5 elements - create `TimerStrategy` abstraction to test both old and new implementations against same contract. Enables instant rollback and side-by-side comparison during development.
 
-- Choose **Option 4 (Hybrid Pyramid)**
-- Combine integration, widget, and unit tests
-- Best overall coverage (21/25 score)
-- Fast feedback from widget/unit tests during development
-- Integration tests for confidence before commits
-
-### Recommended Approach Detail
-
-Based on the analysis, **Option 4 (Hybrid Pyramid)** combined with elements of **Option 5 (Contract Tests)** provides the best balance for this specific redesign:
-
-1. Create `TimerStrategy` abstraction (Option 5)
-2. Keep existing `Future.delayed` implementation working
-3. Implement notification-based strategy alongside old code
-4. Write integration tests that verify both strategies produce same behavior
-5. Integration tests can inspect scheduled notifications (count, times, sounds)
-6. Manual testing checklist for locked-screen behavior (automation gap)
-
-This approach provides:
-
-- Fast feedback during development
-- Confidence in notification scheduling
-- Ability to compare old vs new implementation
-- Safety net for the redesign
-- Instant rollback capability
-
-### Testing Pyramid Distribution (Recommended)
-
-If Option 4 is chosen:
-
-- **Integration tests** (slow, ~2-5 tests): Full sequence execution, notification scheduling verification, critical path
-- **Widget tests** (medium, ~3-5 tests): UI state transitions, progress updates, button interactions
-- **Unit tests** (fast, ~5-10 tests): Timing calculations, session data validation, edge cases
-
-### Manual Testing Checklist (Required for All Options)
-
-No automated approach can test the primary feature (locked-screen delivery). Manual testing must verify:
-
-- Lock screen during first 5-minute session
-- Verify gong plays at 5 minutes (via notification)
-- Verify all 7 gongs play at correct times
-- Verify instruction audio still plays when unlocking
-- Test cancellation mid-sequence
-- Test restarting sequence multiple times
-- Verify battery usage over full 20-minute sequence
-
-### Implementation Timeline Estimate
-
-- Option 1: 2-3 hours
-- Option 2: 3-4 hours
-- Option 3: 2-3 hours (recommended for time-constrained)
-- Option 4: 5-6 hours (recommended for comprehensive)
-- Option 5: 6-8 hours (includes code restructuring)
-- Option 6: 3-4 hours
-- Option 7: 30 minutes
-- Option 8: 0 hours (not recommended)
-- Option 9: 4-6 hours + ongoing subscription costs
-
-### Platform-Specific Considerations
-
-Integration tests can programmatically inspect scheduled notifications on both iOS and Android:
-
-```dart
-// Can verify in tests:
-final pendingNotifications = await notificationPlugin.pendingNotificationRequests();
-expect(pendingNotifications.length, 7);
-expect(pendingNotifications[0].scheduledTime, expectedTime);
-expect(pendingNotifications[0].soundFile, 'gong.aiff');
-```
-
-This allows automated verification of notification scheduling without requiring the screen to be locked.
-
-### Success Criteria for Chosen Approach
-
-Regardless of which option is selected, the testing strategy should demonstrate:
-
-1. **No Regressions**: Existing functionality (audio playback, progress bar, session sequence) continues to work
-2. **Notification Verification**: Can verify notifications are scheduled with correct times and sounds
-3. **Fast Enough**: Provides feedback quickly enough to support active development
-4. **Caught Bugs**: Demonstrates ability to catch actual bugs during development (not just theoretical coverage)
-5. **Sustainable**: Can be maintained and extended as the app evolves
-
-### Risk Assessment
-
-**Highest Risk Options (not recommended):**
-
-- Option 8 (No Testing): No safety net for risky redesign
-- Option 7 (Smoke + Manual): Insufficient coverage for internal architectural change
-- Option 6 (Golden Tests): Doesn't test behavior that's changing
-
-**Moderate Risk Options:**
-
-- Option 1 (Unit Tests): Misses platform integration bugs
-- Option 2 (Widget Tests): Cannot verify notification system
-- Option 9 (Testing Services): Setup overhead may not justify benefit for small app
-
-**Lower Risk Options (recommended):**
-
-- Option 3 (Integration Tests): Best single-layer approach
-- Option 4 (Hybrid Pyramid): Most comprehensive
-- Option 5 (Contract Tests): Excellent for redesign but requires restructuring
-
-### Implementation Phases (if Option 4 or 5 chosen)
-
-**Phase 1: Baseline (Week 1)**
-
-- Set up test infrastructure
-- Write 2-3 integration tests for current implementation
-- Verify tests pass with existing code
-- Establish baseline for comparison
-
-**Phase 2: Development (Week 2-3)**
-
-- Implement notification-based approach per ADR-001 plan
-- Run tests after each step to catch regressions early
-- Add new tests for notification-specific behavior
-
-**Phase 3: Validation (Week 3-4)**
-
-- Run full test suite
-- Perform manual testing checklist for locked-screen behavior
-- Deploy to TestFlight for beta validation
-
-### Quick Start for Time-Constrained Scenario
-
-If 5-8 hours for comprehensive testing is not feasible, **Option 3 (Integration Tests alone)** provides the best value:
-
-- **Time investment:** 2-3 hours setup
-- **Coverage score:** 20/25 (high)
-- **What it tests:** Full app behavior, notification scheduling, timing accuracy, audio playback
-- **What it catches:** Most regressions, platform integration bugs, timing issues
-- **What it provides:** Sufficient safety net for redesign
-
-**Implementation steps:**
-
-1. Set up Flutter integration testing (30 min)
-2. Write test for full sequence execution (45 min)
-3. Add test for notification scheduling verification (30 min)
-4. Add test for cancellation mid-sequence (30 min)
-5. Document manual testing checklist (15 min)
-
-Always combine with manual testing checklist for locked-screen verification.
+**Critical reminder**: All automated testing options have a testability gap - they cannot verify notifications fire when screen is locked. Manual testing remains essential for validating the core requirement regardless of which option is selected.
 
