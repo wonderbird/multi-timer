@@ -438,11 +438,13 @@ No automated approach can test the primary feature (locked-screen delivery). Man
 
 - Option 1: 2-3 hours
 - Option 2: 3-4 hours
-- Option 3: 2-3 hours
-- Option 4: 5-6 hours
+- Option 3: 2-3 hours (recommended for time-constrained)
+- Option 4: 5-6 hours (recommended for comprehensive)
 - Option 5: 6-8 hours (includes refactoring)
 - Option 6: 3-4 hours
 - Option 7: 30 minutes
+- Option 8: 0 hours (not recommended)
+- Option 9: 4-6 hours + ongoing subscription costs
 
 ### Platform-Specific Considerations
 
@@ -509,15 +511,23 @@ Regardless of which option is selected, the testing strategy should demonstrate:
 - Perform manual testing checklist for locked-screen behavior
 - Deploy to TestFlight for beta validation
 
-### Alternative Recommendation for Time-Constrained Scenario
+### Quick Start for Time-Constrained Scenario
 
 If 5-8 hours for comprehensive testing is not feasible, **Option 3 (Integration Tests alone)** provides the best value:
 
-- 2-3 hours setup time
-- High coverage of critical paths (20/25 score)
-- Can verify notification scheduling
-- Catches most regressions
-- Sufficient safety net for refactoring
+- **Time investment:** 2-3 hours setup
+- **Coverage score:** 20/25 (high)
+- **What it tests:** Full app behavior, notification scheduling, timing accuracy, audio playback
+- **What it catches:** Most regressions, platform integration bugs, timing issues
+- **What it provides:** Sufficient safety net for refactoring
 
-Combine with manual testing checklist for locked-screen verification.
+**Implementation steps:**
+
+1. Set up Flutter integration testing (30 min)
+2. Write test for full sequence execution (45 min)
+3. Add test for notification scheduling verification (30 min)
+4. Add test for cancellation mid-sequence (30 min)
+5. Document manual testing checklist (15 min)
+
+Always combine with manual testing checklist for locked-screen verification.
 
