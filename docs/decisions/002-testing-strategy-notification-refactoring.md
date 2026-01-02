@@ -89,23 +89,15 @@ Evaluation of each option against the decision drivers (⭐ = 1 point, max 5 sta
 8. **No Automated Testing (Do Nothing)** (Not Recommended)
 9. **Use Existing Testing Services/Tools**
 
-## Decision
-
-[To be decided by stakeholder]
-
-## Consequences
-
-[To be completed after decision is made]
-
-## Related Decisions
-
-- **ADR-001: Background Timer Reliability with Screen Lock** - Documents the architectural change this testing strategy supports
-
 ## Detailed Options Analysis
 
 ### Option 1: Pure Unit Tests with Mocked Time
 
 Extract business logic into testable functions and mock all dependencies (time, audio player, notifications).
+
+#### Summary
+
+Test timing calculations, session sequencing, and business logic in isolation using mocked dependencies. All platform-specific behavior (audio, notifications, UI) is mocked away for maximum speed.
 
 #### Positive Consequences
 
@@ -134,6 +126,10 @@ Extract business logic into testable functions and mock all dependencies (time, 
 
 Use Flutter's `WidgetTester` with `binding.pump()` to fast-forward time and test UI state changes.
 
+#### Summary
+
+Test UI behavior and state transitions using Flutter's widget testing framework. Time is controlled via `pump()` methods to avoid waiting for real delays. Audio can be mocked for speed.
+
 #### Positive Consequences
 
 - Fast (5-10 seconds per test)
@@ -159,6 +155,10 @@ Use Flutter's `WidgetTester` with `binding.pump()` to fast-forward time and test
 ### Option 3: Integration Tests with Debug Mode Timing
 
 Run full app with debug mode timing (2 minutes) on real device/simulator with actual audio playback and notification scheduling.
+
+#### Summary
+
+Test complete app behavior end-to-end on real device/simulator using debug mode's shortened timings. Verifies real audio playback, notification scheduling, and full session sequence. Can inspect platform notification APIs to verify scheduling correctness.
 
 #### Positive Consequences
 
@@ -194,6 +194,10 @@ Combine multiple testing layers:
 - **Widget tests**: UI state tests with time control (moderate tests)
 - **Integration tests**: Critical path tests with debug timing (few tests)
 
+#### Summary
+
+Implement a balanced testing strategy with three layers. Unit tests provide fast feedback for logic changes, widget tests verify UI behavior, and integration tests ensure critical paths work end-to-end. Follows industry best practices for test pyramid distribution.
+
 #### Positive Consequences
 
 - Majority of tests are fast (good development feedback)
@@ -225,6 +229,10 @@ Create a `TimerStrategy` interface with two implementations:
 
 Test that both implementations satisfy the same contract (observable behavior).
 
+#### Summary
+
+Extract timer logic behind an interface to enable testing both old and new implementations against the same contract. Tests verify observable behavior rather than implementation details. Enables side-by-side comparison and instant rollback capability.
+
 #### Positive Consequences
 
 - Both implementations validated against same requirements
@@ -253,6 +261,10 @@ Test that both implementations satisfy the same contract (observable behavior).
 
 Use Flutter golden tests for UI snapshots and separate timing accuracy tests.
 
+#### Summary
+
+Capture pixel-perfect screenshots of UI states for visual regression testing. Combine with timing verification tests that measure actual durations. Focuses on detecting unintended visual changes rather than behavior changes.
+
 #### Positive Consequences
 
 - Golden tests are very fast (< 1 second)
@@ -280,6 +292,10 @@ Use Flutter golden tests for UI snapshots and separate timing accuracy tests.
 ### Option 7: Smoke Tests + Manual Beta Testing
 
 Minimal automated tests (app launches, button works) plus heavy reliance on manual testing by beta testers.
+
+#### Summary
+
+Implement only basic automated smoke tests to verify app launches and core UI elements render. Rely primarily on manual testing by beta testers for functional validation. Minimal automation investment.
 
 #### Positive Consequences
 
@@ -311,6 +327,10 @@ Minimal automated tests (app launches, button works) plus heavy reliance on manu
 ### Option 8: No Automated Testing (Do Nothing)
 
 Proceed with redesign without implementing any new automated tests. Rely entirely on manual testing during development.
+
+#### Summary
+
+Skip automated testing entirely and proceed with the notification-based redesign using only manual verification. Each code change requires manual testing to verify correctness. Zero time investment in test infrastructure.
 
 #### Positive Consequences
 
@@ -348,6 +368,10 @@ Proceed with redesign without implementing any new automated tests. Rely entirel
 ### Option 9: Use Existing Testing Services/Tools
 
 Adopt cloud-based testing services or testing frameworks specifically designed for mobile apps.
+
+#### Summary
+
+Leverage third-party testing infrastructure such as Firebase Test Lab, BrowserStack, or AWS Device Farm. Provides access to device farms, automated test execution, and professional testing tools. May include features like test recording and replay.
 
 #### Positive Consequences
 
@@ -387,7 +411,19 @@ Adopt cloud-based testing services or testing frameworks specifically designed f
 - Sauce Labs
 - Appium (open source framework, self-hosted)
 
-## Implementation Guidance
+## Decision
+
+[To be decided by stakeholder]
+
+## Consequences
+
+[To be completed after decision is made]
+
+## Related Decisions
+
+- **ADR-001: Background Timer Reliability with Screen Lock** - Documents the architectural change this testing strategy supports
+
+## Implementation Notes
 
 ### Top Recommendations
 
