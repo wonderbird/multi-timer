@@ -152,6 +152,14 @@ Test UI behavior and state transitions using Flutter's widget testing framework.
 - **Time manipulation differences**: Keep widget test durations short; validate timing with integration tests
 - **Implementation complexity**: Use Flutter's official testing documentation and examples; start with simple tests
 
+#### Technical Implementation Details
+
+- Use Flutter's widget testing framework (`flutter_test` package)
+- Test files in `test/` directory with `_test.dart` suffix
+- Run with `flutter test` command
+- Mock audio player using packages like `mockito`
+- Control time using `binding.pump(Duration)` methods
+
 ### Option 3: Integration Tests with Debug Mode Timing
 
 Run full app with debug mode timing (2 minutes) on real device/simulator with actual audio playback and notification scheduling.
@@ -186,6 +194,15 @@ Test complete app behavior end-to-end on real device/simulator using debug mode'
 - **Device requirement**: Use simulator for faster execution; reserve physical device for pre-release testing
 - **Locked-screen gap**: Maintain manual testing checklist; run before each beta/release
 
+#### Technical Implementation Details
+
+- Use Flutter's integration testing framework (`integration_test` package)
+- Test files in `integration_test/` directory
+- Run on real device/simulator: `flutter test integration_test/`
+- Can inspect platform notifications using `flutter_local_notifications` plugin APIs
+- Use debug mode timing (`kDebugMode` constant) for faster execution
+- Assert on scheduled notifications: `await notificationPlugin.pendingNotificationRequests()`
+
 ### Option 4: Hybrid Pyramid Approach
 
 Combine multiple testing layers:
@@ -219,6 +236,16 @@ Implement a balanced testing strategy with three layers. Unit tests provide fast
 - **Setup investment**: Implement incrementally; start with integration tests (highest value), add widget tests later
 - **Understanding strategy**: Document testing approach in README; use clear test names that explain what they verify
 - **Complexity**: Standard approach in industry; many examples available; worth investment for risky redesign
+
+#### Technical Implementation Details
+
+- Combine three testing approaches:
+  - Unit tests in `test/unit/` directory
+  - Widget tests in `test/widget/` directory  
+  - Integration tests in `integration_test/` directory
+- Run unit/widget tests with `flutter test`
+- Run integration tests with `flutter test integration_test/`
+- CI/CD can run fast tests (unit/widget) on every commit, slow tests (integration) pre-merge
 
 ### Option 5: Contract Tests with Abstracted Timer
 
@@ -256,6 +283,15 @@ Extract timer logic behind an interface to enable testing both old and new imple
 - **Abstraction complexity**: Keep interface simple; document with clear examples; common pattern in software design
 - **Upfront cost**: Amortized over project lifetime; enables faster changes in future
 - **Missing platform issues**: Combine with integration tests that verify platform behavior; contract verifies logic correctness
+
+#### Technical Implementation Details
+
+- Create abstract `TimerStrategy` interface with methods: `startSession()`, `cancelSession()`, `getProgress()`
+- Implement `DelayBasedTimerStrategy` (wraps current `Future.delayed` code)
+- Implement `NotificationBasedTimerStrategy` (new notification approach)
+- Tests verify both strategies produce same observable outputs
+- Use dependency injection to swap implementations
+- Feature flag allows runtime switching for testing/rollback
 
 ### Option 6: Golden Tests + Timing Verification
 
