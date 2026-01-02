@@ -1,4 +1,4 @@
-# ADR 002: Testing Strategy for Notification-Based Timer Implementation
+# ADR 002: Testing Strategy for Notification-Based Timer Redesign
 
 ## Status
 
@@ -6,7 +6,7 @@ Proposed
 
 ## Executive Summary
 
-This ADR evaluates 9 testing approaches for implementing the notification-based timer (ADR-001 fix). The refactoring replaces `Future.delayed()` with OS-native notifications, which is a risky internal architectural change. Key finding: **Option 4 (Hybrid Pyramid)** or **Option 3 (Integration Tests)** provide the best balance of safety, speed, and coverage.
+This ADR evaluates 9 testing approaches for implementing the notification-based timer (ADR-001 fix). The redesign replaces `Future.delayed()` with OS-native notifications, which is a risky architectural change affecting internal implementation. Key finding: **Option 4 (Hybrid Pyramid)** or **Option 3 (Integration Tests)** provide the best balance of safety, speed, and coverage.
 
 **Critical constraint:** Automated tests cannot verify locked-screen notification delivery. Manual testing remains essential for the primary feature.
 
@@ -14,7 +14,7 @@ This ADR evaluates 9 testing approaches for implementing the notification-based 
 
 ## Context
 
-The app is undergoing a significant architectural change to fix the screen lock issue (as documented in ADR-001). The current implementation uses `Future.delayed()` for timing, which will be replaced with OS-native scheduled notifications. This is a risky refactoring that could break core functionality.
+The app is undergoing a significant architectural change to fix the screen lock issue (as documented in ADR-001). The current implementation uses `Future.delayed()` for timing, which will be replaced with OS-native scheduled notifications. This is a risky redesign that could break core functionality.
 
 ### Current Implementation
 
@@ -48,7 +48,7 @@ There is a fundamental testability gap: automated tests cannot verify that notif
 
 ## Decision Drivers
 
-1. **Safety Net During Refactoring**: Need confidence that existing functionality won't break during significant internal changes
+1. **Safety Net During Redesign**: Need confidence that existing functionality won't break during significant internal changes
 2. **Fast Feedback Loop**: Tests must run quickly enough to use during development (< 1 minute for most tests)
 3. **Regression Detection**: Must catch breaking changes to timing, audio, UI, and session sequence
 4. **Platform Integration Coverage**: Must verify notification scheduling even if locked-screen delivery requires manual testing
@@ -76,6 +76,18 @@ Evaluation of each option against the decision drivers (⭐ = 1 point, max 5 sta
 - **Option 3 (Integration Tests)** is close second (20/25) with less time investment
 - **Options 1, 6, 7, 8** score poorly on core drivers (safety net, regression detection, platform integration)
 - **Options 4 and 5** require most upfront investment but provide strongest safety net
+
+## Considered Options
+
+1. **Pure Unit Tests with Mocked Time**
+2. **Widget Tests with Time Control**
+3. **Integration Tests with Debug Mode Timing** (Recommended for time-constrained)
+4. **Hybrid Pyramid Approach** (Recommended for comprehensive coverage)
+5. **Contract Tests with Abstracted Timer**
+6. **Golden Tests + Timing Verification**
+7. **Smoke Tests + Manual Beta Testing**
+8. **No Automated Testing (Do Nothing)** (Not Recommended)
+9. **Use Existing Testing Services/Tools**
 
 ## Decision
 
@@ -202,7 +214,7 @@ Combine multiple testing layers:
 - **Maintenance burden**: Keep total test count reasonable (15-20 tests); favor quality over quantity
 - **Setup investment**: Implement incrementally; start with integration tests (highest value), add widget tests later
 - **Understanding strategy**: Document testing approach in README; use clear test names that explain what they verify
-- **Complexity**: Standard approach in industry; many examples available; worth investment for risky refactoring
+- **Complexity**: Standard approach in industry; many examples available; worth investment for risky redesign
 
 ### Option 5: Contract Tests with Abstracted Timer
 
@@ -220,7 +232,7 @@ Test that both implementations satisfy the same contract (observable behavior).
 - Easy to switch between implementations via feature flag
 - Instant rollback if notification approach fails
 - Tests verify observable behavior, not implementation details
-- Excellent for validating risky refactorings
+- Excellent for validating risky redesigns
 - Fake timer can complete instantly for fast tests
 
 #### Negative Consequences
@@ -263,7 +275,7 @@ Use Flutter golden tests for UI snapshots and separate timing accuracy tests.
 - **Audio/notification gaps**: Combine with other testing approaches for behavior verification
 - **Update burden**: Use golden tests sparingly; focus on critical UI states only
 - **Platform differences**: Generate separate golden files per platform; or use only on primary development platform
-- **Behavior testing limitation**: Use golden tests only for regression detection, not for verifying refactoring
+- **Behavior testing limitation**: Use golden tests only for regression detection, not for verifying redesign
 
 ### Option 7: Smoke Tests + Manual Beta Testing
 
@@ -280,7 +292,7 @@ Minimal automated tests (app launches, button works) plus heavy reliance on manu
 
 - High risk of shipping bugs
 - Slow feedback (hours/days instead of seconds)
-- No safety net during refactoring
+- No safety net during redesign
 - Edge cases easily missed
 - Cannot rely on this during active development
 - Regression detection requires careful manual comparison
@@ -294,30 +306,30 @@ Minimal automated tests (app launches, button works) plus heavy reliance on manu
 - **Development reliability**: Consider this approach only if timeline is extremely tight and stakes are low
 - **Regression detection**: Keep detailed notes of expected behavior; compare systematically
 
-**Overall assessment**: Mitigations help but cannot fully address the fundamental risks. Not recommended for risky refactoring work.
+**Overall assessment**: Mitigations help but cannot fully address the fundamental risks. Not recommended for risky redesign work.
 
 ### Option 8: No Automated Testing (Do Nothing)
 
-Proceed with refactoring without implementing any new automated tests. Rely entirely on manual testing during development.
+Proceed with redesign without implementing any new automated tests. Rely entirely on manual testing during development.
 
 #### Positive Consequences
 
 - Zero time investment in test infrastructure
 - No learning curve for testing frameworks
-- Can start refactoring immediately
+- Can start redesign immediately
 - Simplest possible approach
 
 #### Negative Consequences
 
-- No safety net during risky refactoring
+- No safety net during risky redesign
 - High probability of introducing regressions
 - Breaking changes discovered late (after manual testing)
 - Difficult to verify that existing functionality still works
 - Each code change requires extensive manual verification
-- Refactoring becomes much slower due to manual verification overhead
+- Redesign becomes much slower due to manual verification overhead
 - Difficult to verify edge cases systematically
 - No way to quickly verify fixes don't break other parts
-- Fear of refactoring leads to worse code quality over time
+- Fear of change leads to worse code quality over time
 - Cannot confidently verify timing accuracy changes
 
 #### Mitigations for Negative Consequences
@@ -326,7 +338,7 @@ Proceed with refactoring without implementing any new automated tests. Rely enti
 - **Regression risk**: Manual testing after every small change; use beta testers for validation before merging
 - **Late discovery**: Test continuously during development, not just at the end
 - **Verification difficulty**: Create detailed checklist of expected behaviors; systematically verify each one
-- **Manual overhead**: Accept that refactoring will take longer; plan accordingly
+- **Manual overhead**: Accept that redesign will take longer; plan accordingly
 - **Edge cases**: Document edge cases upfront; test them explicitly
 - **Fear of change**: Make changes smaller and more isolated; reduce blast radius
 - **Timing verification**: Use debug mode (shorter timings) for faster manual verification cycles
@@ -397,7 +409,7 @@ Adopt cloud-based testing services or testing frameworks specifically designed f
 
 ### Recommended Approach Detail
 
-Based on the analysis, **Option 4 (Hybrid Pyramid)** combined with elements of **Option 5 (Contract Tests)** provides the best balance for this specific refactoring:
+Based on the analysis, **Option 4 (Hybrid Pyramid)** combined with elements of **Option 5 (Contract Tests)** provides the best balance for this specific redesign:
 
 1. Create `TimerStrategy` abstraction (Option 5)
 2. Keep existing `Future.delayed` implementation working
@@ -411,7 +423,7 @@ This approach provides:
 - Fast feedback during development
 - Confidence in notification scheduling
 - Ability to compare old vs new implementation
-- Safety net for the refactoring
+- Safety net for the redesign
 - Instant rollback capability
 
 ### Testing Pyramid Distribution (Recommended)
@@ -440,7 +452,7 @@ No automated approach can test the primary feature (locked-screen delivery). Man
 - Option 2: 3-4 hours
 - Option 3: 2-3 hours (recommended for time-constrained)
 - Option 4: 5-6 hours (recommended for comprehensive)
-- Option 5: 6-8 hours (includes refactoring)
+- Option 5: 6-8 hours (includes code restructuring)
 - Option 6: 3-4 hours
 - Option 7: 30 minutes
 - Option 8: 0 hours (not recommended)
@@ -474,7 +486,7 @@ Regardless of which option is selected, the testing strategy should demonstrate:
 
 **Highest Risk Options (not recommended):**
 
-- Option 8 (No Testing): No safety net for risky refactoring
+- Option 8 (No Testing): No safety net for risky redesign
 - Option 7 (Smoke + Manual): Insufficient coverage for internal architectural change
 - Option 6 (Golden Tests): Doesn't test behavior that's changing
 
@@ -488,7 +500,7 @@ Regardless of which option is selected, the testing strategy should demonstrate:
 
 - Option 3 (Integration Tests): Best single-layer approach
 - Option 4 (Hybrid Pyramid): Most comprehensive
-- Option 5 (Contract Tests): Excellent for refactoring but requires restructuring
+- Option 5 (Contract Tests): Excellent for redesign but requires restructuring
 
 ### Implementation Phases (if Option 4 or 5 chosen)
 
@@ -519,7 +531,7 @@ If 5-8 hours for comprehensive testing is not feasible, **Option 3 (Integration 
 - **Coverage score:** 20/25 (high)
 - **What it tests:** Full app behavior, notification scheduling, timing accuracy, audio playback
 - **What it catches:** Most regressions, platform integration bugs, timing issues
-- **What it provides:** Sufficient safety net for refactoring
+- **What it provides:** Sufficient safety net for redesign
 
 **Implementation steps:**
 
