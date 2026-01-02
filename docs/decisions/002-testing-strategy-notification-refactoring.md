@@ -332,6 +332,29 @@ Adopt cloud-based testing services or testing frameworks specifically designed f
 - Sauce Labs
 - Appium (open source framework, self-hosted)
 
+## Options Comparison Matrix
+
+Evaluation of each option against the decision drivers (⭐ = 1 point, max 5 stars per driver):
+
+| Option | Safety Net | Fast Feedback | Regression Detection | Platform Integration | Maintainability | Total | Time Investment |
+|--------|------------|---------------|----------------------|---------------------|-----------------|-------|-----------------|
+| **1. Unit Tests** | ⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐ | ⭐ | ⭐⭐⭐⭐ | 14/25 | 2-3 hours |
+| **2. Widget Tests** | ⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐ | ⭐⭐⭐⭐ | 15/25 | 3-4 hours |
+| **3. Integration Tests** | ⭐⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | 20/25 | 2-3 hours |
+| **4. Hybrid Pyramid** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | 21/25 | 5-6 hours |
+| **5. Contract Tests** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐ | 19/25 | 6-8 hours |
+| **6. Golden Tests** | ⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐ | ⭐ | ⭐⭐ | 12/25 | 3-4 hours |
+| **7. Smoke + Manual** | ⭐⭐ | ⭐ | ⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐ | 11/25 | 30 min |
+| **8. No Testing** | ⭐ | ⭐ | ⭐ | ⭐ | ⭐⭐⭐⭐⭐ | 9/25 | 0 hours |
+| **9. Testing Services** | ⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐ | 15/25 | 4-6 hours + ongoing cost |
+
+**Key Insights from Matrix:**
+
+- **Option 4 (Hybrid Pyramid)** scores highest overall (21/25)
+- **Option 3 (Integration Tests)** is close second (20/25) with less time investment
+- **Options 1, 6, 7, 8** score poorly on core drivers (safety net, regression detection, platform integration)
+- **Options 4 and 5** require most upfront investment but provide strongest safety net
+
 ## Decision
 
 [To be decided by stakeholder]
@@ -339,6 +362,10 @@ Adopt cloud-based testing services or testing frameworks specifically designed f
 ## Consequences
 
 [To be completed after decision is made]
+
+## Related Decisions
+
+- **ADR-001: Background Timer Reliability with Screen Lock** - Documents the architectural change this testing strategy supports
 
 ## Notes
 
@@ -404,4 +431,67 @@ expect(pendingNotifications[0].soundFile, 'gong.aiff');
 ```
 
 This allows automated verification of notification scheduling without requiring the screen to be locked.
+
+### Success Criteria for Chosen Approach
+
+Regardless of which option is selected, the testing strategy should demonstrate:
+
+1. **No Regressions**: Existing functionality (audio playback, progress bar, session sequence) continues to work
+2. **Notification Verification**: Can verify notifications are scheduled with correct times and sounds
+3. **Fast Enough**: Provides feedback quickly enough to support active development
+4. **Caught Bugs**: Demonstrates ability to catch actual bugs during development (not just theoretical coverage)
+5. **Sustainable**: Can be maintained and extended as the app evolves
+
+### Risk Assessment
+
+**Highest Risk Options (not recommended):**
+
+- Option 8 (No Testing): No safety net for risky refactoring
+- Option 7 (Smoke + Manual): Insufficient coverage for internal architectural change
+- Option 6 (Golden Tests): Doesn't test behavior that's changing
+
+**Moderate Risk Options:**
+
+- Option 1 (Unit Tests): Misses platform integration bugs
+- Option 2 (Widget Tests): Cannot verify notification system
+- Option 9 (Testing Services): Setup overhead may not justify benefit for small app
+
+**Lower Risk Options (recommended):**
+
+- Option 3 (Integration Tests): Best single-layer approach
+- Option 4 (Hybrid Pyramid): Most comprehensive
+- Option 5 (Contract Tests): Excellent for refactoring but requires restructuring
+
+### Implementation Phases (if Option 4 or 5 chosen)
+
+**Phase 1: Baseline (Week 1)**
+
+- Set up test infrastructure
+- Write 2-3 integration tests for current implementation
+- Verify tests pass with existing code
+- Establish baseline for comparison
+
+**Phase 2: Development (Week 2-3)**
+
+- Implement notification-based approach per ADR-001 plan
+- Run tests after each step to catch regressions early
+- Add new tests for notification-specific behavior
+
+**Phase 3: Validation (Week 3-4)**
+
+- Run full test suite
+- Perform manual testing checklist for locked-screen behavior
+- Deploy to TestFlight for beta validation
+
+### Alternative Recommendation for Time-Constrained Scenario
+
+If 5-8 hours for comprehensive testing is not feasible, **Option 3 (Integration Tests alone)** provides the best value:
+
+- 2-3 hours setup time
+- High coverage of critical paths (20/25 score)
+- Can verify notification scheduling
+- Catches most regressions
+- Sufficient safety net for refactoring
+
+Combine with manual testing checklist for locked-screen verification.
 
