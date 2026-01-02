@@ -4,9 +4,17 @@
 
 Proposed
 
+## Executive Summary
+
+This ADR evaluates 9 testing approaches for implementing the notification-based timer (ADR-001 fix). The refactoring replaces `Future.delayed()` with OS-native notifications, which is a risky internal architectural change. Key finding: **Option 4 (Hybrid Pyramid)** or **Option 3 (Integration Tests)** provide the best balance of safety, speed, and coverage.
+
+**Critical constraint:** Automated tests cannot verify locked-screen notification delivery. Manual testing remains essential for the primary feature.
+
+**Recommended:** Option 3 (Integration Tests) for time-constrained scenario (2-3 hours), or Option 4 (Hybrid Pyramid) for comprehensive coverage (5-6 hours).
+
 ## Context
 
-The app is undergoing a significant architectural change to fix the screen lock issue (as documented in ADR-001). The current implementation uses `Future.delayed()` for timing, which will be replaced with OS-native scheduled notifications. This is a risky refactoring that could break core functionality:
+The app is undergoing a significant architectural change to fix the screen lock issue (as documented in ADR-001). The current implementation uses `Future.delayed()` for timing, which will be replaced with OS-native scheduled notifications. This is a risky refactoring that could break core functionality.
 
 ### Current Implementation
 
@@ -46,7 +54,42 @@ There is a fundamental testability gap: automated tests cannot verify that notif
 4. **Platform Integration Coverage**: Must verify notification scheduling even if locked-screen delivery requires manual testing
 5. **Maintainability**: Testing approach must be sustainable for a small team/solo developer
 
-## Considered Options
+## Options Comparison Summary
+
+Evaluation of each option against the decision drivers (⭐ = 1 point, max 5 stars per driver):
+
+| Option | Safety Net | Fast Feedback | Regression Detection | Platform Integration | Maintainability | Total | Time Investment |
+|--------|------------|---------------|----------------------|---------------------|-----------------|-------|-----------------|
+| **1. Unit Tests** | ⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐ | ⭐ | ⭐⭐⭐⭐ | 14/25 | 2-3 hours |
+| **2. Widget Tests** | ⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐ | ⭐⭐⭐⭐ | 15/25 | 3-4 hours |
+| **3. Integration Tests** | ⭐⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | 20/25 | 2-3 hours |
+| **4. Hybrid Pyramid** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | 21/25 | 5-6 hours |
+| **5. Contract Tests** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐ | 19/25 | 6-8 hours |
+| **6. Golden Tests** | ⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐ | ⭐ | ⭐⭐ | 12/25 | 3-4 hours |
+| **7. Smoke + Manual** | ⭐⭐ | ⭐ | ⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐ | 11/25 | 30 min |
+| **8. No Testing** | ⭐ | ⭐ | ⭐ | ⭐ | ⭐⭐⭐⭐⭐ | 9/25 | 0 hours |
+| **9. Testing Services** | ⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐ | 15/25 | 4-6 hours + cost |
+
+**Key Insights:**
+
+- **Option 4 (Hybrid Pyramid)** scores highest overall (21/25)
+- **Option 3 (Integration Tests)** is close second (20/25) with less time investment
+- **Options 1, 6, 7, 8** score poorly on core drivers (safety net, regression detection, platform integration)
+- **Options 4 and 5** require most upfront investment but provide strongest safety net
+
+## Decision
+
+[To be decided by stakeholder]
+
+## Consequences
+
+[To be completed after decision is made]
+
+## Related Decisions
+
+- **ADR-001: Background Timer Reliability with Screen Lock** - Documents the architectural change this testing strategy supports
+
+## Detailed Options Analysis
 
 ### Option 1: Pure Unit Tests with Mocked Time
 
@@ -332,44 +375,27 @@ Adopt cloud-based testing services or testing frameworks specifically designed f
 - Sauce Labs
 - Appium (open source framework, self-hosted)
 
-## Options Comparison Matrix
+## Implementation Guidance
 
-Evaluation of each option against the decision drivers (⭐ = 1 point, max 5 stars per driver):
+### Top Recommendations
 
-| Option | Safety Net | Fast Feedback | Regression Detection | Platform Integration | Maintainability | Total | Time Investment |
-|--------|------------|---------------|----------------------|---------------------|-----------------|-------|-----------------|
-| **1. Unit Tests** | ⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐ | ⭐ | ⭐⭐⭐⭐ | 14/25 | 2-3 hours |
-| **2. Widget Tests** | ⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐ | ⭐⭐⭐⭐ | 15/25 | 3-4 hours |
-| **3. Integration Tests** | ⭐⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | 20/25 | 2-3 hours |
-| **4. Hybrid Pyramid** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | 21/25 | 5-6 hours |
-| **5. Contract Tests** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐ | 19/25 | 6-8 hours |
-| **6. Golden Tests** | ⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐ | ⭐ | ⭐⭐ | 12/25 | 3-4 hours |
-| **7. Smoke + Manual** | ⭐⭐ | ⭐ | ⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐ | 11/25 | 30 min |
-| **8. No Testing** | ⭐ | ⭐ | ⭐ | ⭐ | ⭐⭐⭐⭐⭐ | 9/25 | 0 hours |
-| **9. Testing Services** | ⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐ | 15/25 | 4-6 hours + ongoing cost |
+**For time-constrained scenario (2-3 hours):**
 
-**Key Insights from Matrix:**
+- Choose **Option 3 (Integration Tests)**
+- Write 2-5 integration tests covering critical paths
+- Verify notification scheduling via platform APIs
+- Use manual checklist for locked-screen testing
+- Provides 20/25 coverage score - sufficient safety net
 
-- **Option 4 (Hybrid Pyramid)** scores highest overall (21/25)
-- **Option 3 (Integration Tests)** is close second (20/25) with less time investment
-- **Options 1, 6, 7, 8** score poorly on core drivers (safety net, regression detection, platform integration)
-- **Options 4 and 5** require most upfront investment but provide strongest safety net
+**For comprehensive coverage (5-6 hours):**
 
-## Decision
+- Choose **Option 4 (Hybrid Pyramid)**
+- Combine integration, widget, and unit tests
+- Best overall coverage (21/25 score)
+- Fast feedback from widget/unit tests during development
+- Integration tests for confidence before commits
 
-[To be decided by stakeholder]
-
-## Consequences
-
-[To be completed after decision is made]
-
-## Related Decisions
-
-- **ADR-001: Background Timer Reliability with Screen Lock** - Documents the architectural change this testing strategy supports
-
-## Notes
-
-### Recommended Approach
+### Recommended Approach Detail
 
 Based on the analysis, **Option 4 (Hybrid Pyramid)** combined with elements of **Option 5 (Contract Tests)** provides the best balance for this specific refactoring:
 
