@@ -198,6 +198,61 @@ Minimal automated tests (app launches, button works) plus heavy reliance on manu
 - Cannot rely on this during active development
 - Regression detection requires careful manual comparison
 
+### Option 8: No Automated Testing (Do Nothing)
+
+Proceed with refactoring without implementing any new automated tests. Rely entirely on manual testing during development.
+
+#### Positive Consequences
+
+- Zero time investment in test infrastructure
+- No learning curve for testing frameworks
+- Can start refactoring immediately
+- Simplest possible approach
+
+#### Negative Consequences
+
+- No safety net during risky refactoring
+- High probability of introducing regressions
+- Breaking changes discovered late (after manual testing)
+- Difficult to verify that existing functionality still works
+- Each code change requires extensive manual verification
+- Refactoring becomes much slower due to manual verification overhead
+- Difficult to verify edge cases systematically
+- No way to quickly verify fixes don't break other parts
+- Fear of refactoring leads to worse code quality over time
+- Cannot confidently verify timing accuracy changes
+
+### Option 9: Use Existing Testing Services/Tools
+
+Adopt cloud-based testing services or testing frameworks specifically designed for mobile apps.
+
+#### Positive Consequences
+
+- Professional testing infrastructure
+- May include device farms for testing on multiple devices
+- Some services offer automated regression detection
+- Can record and replay test sessions
+- May include performance monitoring
+
+#### Negative Consequences
+
+- Ongoing subscription costs
+- Learning curve for service-specific features
+- May not support notification testing adequately
+- Dependency on external service availability
+- Privacy concerns (uploading app to third-party service)
+- Setup overhead for integration
+- May be overkill for small app with single developer
+- Still requires writing test scenarios
+
+#### Example Services
+
+- Firebase Test Lab (Google)
+- BrowserStack App Automate
+- AWS Device Farm
+- Sauce Labs
+- Appium (open source framework)
+
 ## Decision
 
 [To be decided by stakeholder]
