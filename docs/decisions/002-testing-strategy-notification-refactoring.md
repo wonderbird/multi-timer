@@ -68,6 +68,13 @@ Extract business logic into testable functions and mock all dependencies (time, 
 - Won't catch notification scheduling bugs
 - Tests might pass while real app is broken
 
+#### Mitigations for Negative Consequences
+
+- **Refactoring overhead**: Extract only the most critical logic (timing calculations, session sequencing); keep UI code integrated
+- **Missing real issues**: Supplement with small number of integration tests (2-3) for critical paths
+- **False confidence**: Document explicitly what unit tests do NOT cover; require integration tests before each release
+- **Platform bugs**: Use integration tests or manual testing checklist for platform-specific verification
+
 ### Option 2: Widget Tests with Time Control
 
 Use Flutter's `WidgetTester` with `binding.pump()` to fast-forward time and test UI state changes.
@@ -86,6 +93,13 @@ Use Flutter's `WidgetTester` with `binding.pump()` to fast-forward time and test
 - Cannot verify notification scheduling (no real platform)
 - Time manipulation may not match real async behavior
 - Moderate complexity to implement correctly
+
+#### Mitigations for Negative Consequences
+
+- **Mocked audio**: Add 1-2 integration tests with real audio to catch playback issues
+- **No notification platform**: Use integration tests (Option 3) for notification verification
+- **Time manipulation differences**: Keep widget test durations short; validate timing with integration tests
+- **Implementation complexity**: Use Flutter's official testing documentation and examples; start with simple tests
 
 ### Option 3: Integration Tests with Debug Mode Timing
 
@@ -109,6 +123,14 @@ Run full app with debug mode timing (2 minutes) on real device/simulator with ac
 - Requires device/simulator
 - Still cannot test locked-screen delivery (automation limitation)
 
+#### Mitigations for Negative Consequences
+
+- **Slow tests**: Run only before commits, not after every code change; use widget tests for rapid iteration
+- **Development speed**: Keep number of integration tests small (2-5); focus on critical paths only
+- **Flaky audio**: Run integration tests locally on developer machine, not in CI initially
+- **Device requirement**: Use simulator for faster execution; reserve physical device for pre-release testing
+- **Locked-screen gap**: Maintain manual testing checklist; run before each beta/release
+
 ### Option 4: Hybrid Pyramid Approach
 
 Combine multiple testing layers:
@@ -131,6 +153,13 @@ Combine multiple testing layers:
 - More initial setup investment
 - Team needs to understand testing strategy
 - Higher complexity than single-layer approach
+
+#### Mitigations for Negative Consequences
+
+- **Maintenance burden**: Keep total test count reasonable (15-20 tests); favor quality over quantity
+- **Setup investment**: Implement incrementally; start with integration tests (highest value), add widget tests later
+- **Understanding strategy**: Document testing approach in README; use clear test names that explain what they verify
+- **Complexity**: Standard approach in industry; many examples available; worth investment for risky refactoring
 
 ### Option 5: Contract Tests with Abstracted Timer
 
@@ -158,6 +187,13 @@ Test that both implementations satisfy the same contract (observable behavior).
 - Higher upfront investment
 - Contract tests might not catch real-world platform issues
 
+#### Mitigations for Negative Consequences
+
+- **Restructuring effort**: Abstraction provides long-term benefits (testability, flexibility); worthwhile for core functionality
+- **Abstraction complexity**: Keep interface simple; document with clear examples; common pattern in software design
+- **Upfront cost**: Amortized over project lifetime; enables faster changes in future
+- **Missing platform issues**: Combine with integration tests that verify platform behavior; contract verifies logic correctness
+
 ### Option 6: Golden Tests + Timing Verification
 
 Use Flutter golden tests for UI snapshots and separate timing accuracy tests.
@@ -178,6 +214,14 @@ Use Flutter golden tests for UI snapshots and separate timing accuracy tests.
 - Platform-specific (golden tests can differ across platforms)
 - Not well-suited for testing behavior changes
 
+#### Mitigations for Negative Consequences
+
+- **Brittleness**: Accept that golden tests need updating with UI changes; use for stable screens only
+- **Audio/notification gaps**: Combine with other testing approaches for behavior verification
+- **Update burden**: Use golden tests sparingly; focus on critical UI states only
+- **Platform differences**: Generate separate golden files per platform; or use only on primary development platform
+- **Behavior testing limitation**: Use golden tests only for regression detection, not for verifying refactoring
+
 ### Option 7: Smoke Tests + Manual Beta Testing
 
 Minimal automated tests (app launches, button works) plus heavy reliance on manual testing by beta testers.
@@ -197,6 +241,17 @@ Minimal automated tests (app launches, button works) plus heavy reliance on manu
 - Edge cases easily missed
 - Cannot rely on this during active development
 - Regression detection requires careful manual comparison
+
+#### Mitigations for Negative Consequences
+
+- **Bug risk**: Develop comprehensive manual testing checklist; test systematically after each change
+- **Slow feedback**: Keep changes very small; test immediately after each change
+- **No safety net**: Make incremental commits; be prepared to roll back frequently
+- **Missing edge cases**: Dedicate time to brainstorm edge cases; document them explicitly
+- **Development reliability**: Consider this approach only if timeline is extremely tight and stakes are low
+- **Regression detection**: Keep detailed notes of expected behavior; compare systematically
+
+**Overall assessment**: Mitigations help but cannot fully address the fundamental risks. Not recommended for risky refactoring work.
 
 ### Option 8: No Automated Testing (Do Nothing)
 
@@ -222,6 +277,19 @@ Proceed with refactoring without implementing any new automated tests. Rely enti
 - Fear of refactoring leads to worse code quality over time
 - Cannot confidently verify timing accuracy changes
 
+#### Mitigations for Negative Consequences
+
+- **No safety net**: Work in very small increments; commit working code frequently; maintain ability to roll back
+- **Regression risk**: Manual testing after every small change; use beta testers for validation before merging
+- **Late discovery**: Test continuously during development, not just at the end
+- **Verification difficulty**: Create detailed checklist of expected behaviors; systematically verify each one
+- **Manual overhead**: Accept that refactoring will take longer; plan accordingly
+- **Edge cases**: Document edge cases upfront; test them explicitly
+- **Fear of change**: Make changes smaller and more isolated; reduce blast radius
+- **Timing verification**: Use debug mode (shorter timings) for faster manual verification cycles
+
+**Overall assessment**: Mitigations are labor-intensive and error-prone. Only suitable if testing investment is absolutely impossible.
+
 ### Option 9: Use Existing Testing Services/Tools
 
 Adopt cloud-based testing services or testing frameworks specifically designed for mobile apps.
@@ -245,13 +313,24 @@ Adopt cloud-based testing services or testing frameworks specifically designed f
 - May be overkill for small app with single developer
 - Still requires writing test scenarios
 
+#### Mitigations for Negative Consequences
+
+- **Subscription costs**: Use free tiers where available (Firebase Test Lab has limited free quota); evaluate ROI for small project
+- **Learning curve**: Start with one service; use official tutorials and examples
+- **Notification support**: Research notification testing capabilities before committing; supplement with local testing if needed
+- **Service dependency**: Use primarily for pre-release validation, not for daily development feedback
+- **Privacy**: Review service privacy policies; use services from reputable vendors (Google, Amazon, Microsoft)
+- **Setup overhead**: Follow service quickstart guides; many provide Flutter-specific examples
+- **Overkill concern**: Consider free tier for device diversity testing only; not for daily development
+- **Test scenario work**: This is unavoidable regardless of testing approach; services don't eliminate the need for test design
+
 #### Example Services
 
-- Firebase Test Lab (Google)
+- Firebase Test Lab (Google) - free tier available
 - BrowserStack App Automate
 - AWS Device Farm
 - Sauce Labs
-- Appium (open source framework)
+- Appium (open source framework, self-hosted)
 
 ## Decision
 
