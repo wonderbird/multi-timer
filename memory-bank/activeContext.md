@@ -2,15 +2,17 @@
 
 ## Current Iteration Goal
 
-**Publish Multi Timer to Apple TestFlight for beta testing**
+**Fix screen lock issue to enable automatic display sleep mode**
 
-Enable two beta testers (friends) to install and test the breathing exercise app on their iPhones.
+Implement notification-based timing approach (documented in ADR-001) so users can complete the 20-minute breathing exercise sequence with their device's automatic display sleep enabled.
 
 ## Current Focus
 
-**TestFlight Deployment - Complete**
+**Implementing Notification-Based Background Timing**
 
-TestFlight deployment completed successfully. All 8 steps completed:
+Replacing `Future.delayed()` timer approach with OS-native scheduled notifications to maintain accurate timing when screen locks.
+
+**Previous Achievement**: TestFlight deployment completed successfully. All 8 steps completed:
 - ✅ App Store Connect record created
 - ✅ Distribution certificate configured
 - ✅ Xcode project signing set up
@@ -33,6 +35,29 @@ TestFlight deployment completed successfully. All 8 steps completed:
 
 ## Recent Changes
 
+### Beta Feedback Received
+
+**Priority 1: Screen Lock Issue**
+
+- Beta testers reported that the screen lock limitation is their most urgent need
+- They wish the app would work while automatic display sleep mode is enabled
+- **Impact**: 
+  - Users must manually disable auto-lock in Settings before each practice session
+  - Users must remember to re-enable auto-lock after practice
+  - **Security risk**: Forgetting to re-enable leaves device unprotected
+  - Creates friction and cognitive burden (pre/post practice routine)
+- **Decision**: Implement notification-based approach from ADR-001
+
+**Priority 2: Audio Volume**
+
+- One beta tester suggested increasing the volume of the audio instructions (details limited; follow-up needed)
+- **Impact**: Refinement - app is usable but audio could be clearer
+- **Decision**: Address after screen lock fix is deployed
+
+**Prioritization Rationale**: Screen lock issue creates security risk (users may forget to re-enable auto-lock) and adds friction to every practice session. Audio volume is an enhancement that can be addressed in a subsequent release.
+
+### Previous Development
+
 The git history shows steady development of the core breathing timer functionality:
 
 - Latest feature: Added "Nachspüren" (sensing/feeling) session to complete the 7-session sequence
@@ -43,16 +68,21 @@ The git history shows steady development of the core breathing timer functionali
 
 ## Active Decisions
 
-### Accepted for Beta
+### Confirmed by Beta Feedback
 
-- Publishing with known screen lock limitation
-- Documenting workaround for testers
-- Using "Multi Timer" as official app name
-- Small, focused beta group (2 testers)
+- ✅ Screen lock fix is the #1 priority (beta testers' most urgent need)
+- ✅ Proceeding with notification-based approach from ADR-001
 
-### Pending Beta Feedback
+### Current Implementation Approach
 
-- Whether to implement notifications-based timer fix (ADR-001)
+- **Single increment delivery**: Develop complete feature with 11 testable intermediate steps
+- **Steps 1-7**: Additive infrastructure and validation (don't break existing functionality)
+- **Step 8**: Transformation (replace timer with notifications)
+- **Steps 9-11**: Refinement and edge case handling
+- **Each step independently testable and committable**
+
+### Still Pending Beta Feedback
+
 - Future product direction (private vs. public release)
 - Additional features or breathing programs
 - Timing customization needs
@@ -95,21 +125,24 @@ The code subtracts audio and gong durations from total session time to achieve p
 
 ## Next Immediate Step
 
-**Awaiting Beta Feedback**
+**Step 1: Foundation Setup**
 
-Next actions:
-1. **Monitor Tester Responses**: Wait for beta testers to receive invitation emails and install TestFlight
-2. **First Beta Test**: Testers install app and complete 20-minute breathing sequence
-3. **Gather Feedback**: Collect user feedback on:
-   - Overall experience with the breathing sequence
-   - Audio instruction clarity and timing
-   - Progress bar usefulness
-   - Screen lock workaround burden
-   - Any bugs or issues encountered
-4. **Evaluate Next Steps**: Based on feedback, decide:
-   - Whether to fix screen lock issue (ADR-001)
-   - Whether to pursue public App Store release
-   - What improvements/features to prioritize
+Add notification infrastructure without changing app behavior.
+
+Tasks:
+
+- Add `flutter_local_notifications` and `timezone` dependencies to pubspec.yaml
+- Configure iOS (Info.plist permissions)
+- Configure Android (AndroidManifest.xml)
+- Initialize notification plugin in main()
+
+Success criteria:
+
+- `flutter pub get` succeeds
+- App builds and runs without errors
+- No behavior change - timer still works as before
+
+Expected commit: `build(deps): add flutter_local_notifications for background timing`
 
 ## Blockers
 
@@ -117,8 +150,9 @@ None identified. Prerequisites met:
 
 - ✅ Paid Apple Developer account
 - ✅ macOS with Xcode available
-- ✅ App functionally complete for beta
-- ✅ Audio assets prepared
+- ✅ Initial beta feedback received from both testers
+- ✅ Technical solution documented (ADR-001)
+- ✅ Implementation plan defined
 
 ## Project Insights
 

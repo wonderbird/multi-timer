@@ -82,7 +82,7 @@ multi-timer/
 
 - **Project**: Runner.xcodeproj (workspace-based)
 - **Signing**: Requires distribution certificate for TestFlight
-- **Bundle ID**: Needs unique identifier (com.example.multitimer currently)
+- **Bundle ID**: systems.boos.multiTimer (registered in Apple Developer portal)
 - **Deployment Target**: Supports recent iOS versions
 - **Capabilities**: Audio playback (configured)
 

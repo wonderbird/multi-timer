@@ -2,7 +2,7 @@
 
 ## Problem Statement
 
-People develop psychological armors in early stages of life as defense mechanisms. These armors can persist into adulthood and affect emotional well-being. A specific breathing exercise technique can help resolve these psychological armors through a structured sequence of breathing patterns.
+A specific breathing exercise technique, rooted in shamanic and yoga traditions, supports personal well-being and self-exploration through a structured sequence of breathing patterns. This traditional practice helps users develop greater body awareness and emotional balance.
 
 ## Solution
 
@@ -48,7 +48,7 @@ By automating the timing and audio cues, practitioners can focus entirely on the
 
 ## Current User Workaround
 
-**Screen Lock Issue**: Users must configure their device to not auto-lock, or manually keep screen from locking during the 20-minute sequence. This is acceptable for the initial beta as it involves only 2 testers who can be directly instructed.
+**Screen Lock Issue**: Users must disable auto-lock in device Settings before each practice session (Settings → Display & Brightness → Auto-Lock → "Never"), then remember to re-enable it afterwards to protect their device. This creates friction and security risk (users may forget to re-enable). Initial beta documented this workaround in TestFlight instructions with security warning.
 
 ## Success Metrics (Beta Phase)
 
@@ -62,7 +62,7 @@ By automating the timing and audio cues, practitioners can focus entirely on the
 
 Decisions pending beta feedback:
 
-- Should screen lock issue be fixed (notifications approach)?
+- Screen lock issue - implementing notifications approach based on beta feedback (v1.1.0)
 - Is there demand for public App Store release?
 - Do users want additional breathing programs?
 - Should timing be customizable?

@@ -2,7 +2,7 @@
 
 ## Overview
 
-Multi Timer is a Flutter mobile application designed to guide users through a specific breathing exercise sequence aimed at resolving psychological armors developed in early life stages.
+Multi Timer is a Flutter mobile application designed to guide users through a specific breathing exercise sequence for personal well-being and self-exploration, rooted in shamanic and yoga traditions.
 
 ## Core Requirements
 
@@ -33,16 +33,28 @@ Multi Timer is a Flutter mobile application designed to guide users through a sp
 ## Current Limitations
 
 1. **Known Issue**: Timer stops when device screen locks (documented in ADR-001)
-   - Impact: Users must keep screen on during 20-minute sequence
-   - Status: Accepted for initial beta release; will gather feedback before implementing fix
+   - Impact: Users must disable auto-lock in Settings before practice, then re-enable after
+   - **Security Risk**: Users may forget to re-enable auto-lock, leaving device unprotected
+   - Status: ~~Accepted for initial beta~~ **Being fixed in version 1.1.0** based on beta feedback
+   - Solution: Notification-based timing approach (implementation plan defined)
 
 ## Success Criteria
 
+### Initial Beta (v1.0.0) ✅
+
 1. ✅ App successfully deploys to Apple TestFlight
-2. ⏳ Two beta testers (friends) can install and use the app
-3. ⏳ Complete 20-minute breathing exercise sequence executes correctly with screen unlocked
-4. ⏳ Audio instructions and gongs play at appropriate times
-5. ⏳ Gather user feedback to inform future development decisions
+2. ✅ Two beta testers (friends) can install and use the app
+3. ✅ Complete 20-minute breathing exercise sequence executes correctly with screen unlocked
+4. ✅ Audio instructions and gongs play at appropriate times
+5. ✅ Gather initial user feedback to inform next iteration
+6. ⏳ Continue gathering user feedback for future development decisions
+
+### Next Release (v1.1.0) ⏳
+
+1. ⏳ Complete 20-minute sequence executes correctly **with screen locked**
+2. ⏳ Automatic display sleep mode works during exercise
+3. ⏳ Beta testers confirm screen lock fix meets their needs
+4. ⏳ No regression in audio quality or timing accuracy
 
 ## Target Audience
 
@@ -51,21 +63,22 @@ Multi Timer is a Flutter mobile application designed to guide users through a sp
 
 ## Scope Boundaries
 
-### In Scope
+### In Scope (Current Iteration - v1.1.0)
 
+- **Fix screen lock timer issue** (notification-based approach)
 - iOS TestFlight deployment
 - Current breathing exercise sequence
 - Existing audio recordings
-- Basic timer and audio playback functionality
+- Enhanced timer functionality with background support
 
 ### Out of Scope (for current iteration)
 
 - Android deployment
-- Fixing screen lock timer issue
 - Customizable timer sequences
 - Multiple breathing exercise programs
 - User accounts or data persistence
 - Analytics or usage tracking
+- Public App Store release
 
 ## Product Vision
 

@@ -43,27 +43,53 @@
 
 ## What's Left to Build
 
+### Screen Lock Fix 🚧 (In Progress)
+
+**Goal**: Enable automatic display sleep during 20-minute breathing sequence
+
+**Approach**: Notification-based timing (ADR-001) - Implementation plan
+
+**Implementation Steps**:
+
+1. ⏳ Foundation Setup - Add dependencies and configuration
+2. ⏳ Permission Flow - Request notification permissions
+3. ⏳ Single Notification Proof - Validate notifications fire while locked
+4. ⏳ Audio Asset Conversion - Convert gong.mp3 to gong.aiff
+5. ⏳ Notification with Sound - Validate audio playback
+6. ⏳ Schedule Calculation - Pre-calculate all 7 notification times
+7. ⏳ Parallel Notification Schedule - Run alongside existing timer
+8. ⏳ Replace Timer Logic - Remove old timer approach
+9. ⏳ Progress Bar Refinement - Handle screen lock/unlock
+10. ⏳ Cleanup & Edge Cases - Cancellation and notification management
+11. ⏳ End-to-End Validation - Real-world testing
+
+**Status**: Starting Step 1 (Foundation Setup)
+
+**Next TestFlight Release**: Version 1.1.0 with screen lock fix
+
 ### TestFlight Deployment ✅ (Completed)
 
 **All deployment steps completed successfully**
 
 TestFlight deployment completed. App is live in TestFlight with 2 beta testers invited.
 
-**Key Configuration:**
+**Key Configuration**:
+
 - Bundle identifier: systems.boos.multiTimer
 - App Store Connect record: "Multi Timer für Atempraxis"
 - Version: 1.0.0+1
 - Git tag: v4 (tracks source code for this build)
 
-**Critical Learnings:**
+**Critical Learnings**:
+
 1. **CocoaPods Integration**: Must run `flutter build ios --release` before archiving in Xcode
 2. **MinimumOSVersion Fix**: Flutter's AppFrameworkInfo.plist requires explicit MinimumOSVersion key (commit 383610b)
 
 **Full deployment process documented in**: `docs/appstore-submission-de-DE/README.md`
 
-### Future Enhancements ⏸️ (Pending Beta Feedback)
+### Future Enhancements ⏸️ (Pending Further Feedback)
 
-- ⏸️ Fix screen lock timer issue (implement notifications approach from ADR-001)
+- ⏳ Audio volume adjustment (beta tester feedback: increase instruction audio volume)
 - ⏸️ Android deployment
 - ⏸️ Additional breathing exercise sequences
 - ⏸️ Customizable timer durations
@@ -73,29 +99,35 @@ TestFlight deployment completed. App is live in TestFlight with 2 beta testers i
 
 ## Current Status
 
-**Phase**: Awaiting beta feedback
+**Phase**: Implementing screen lock fix based on beta feedback
 
-**Last Completed**: TestFlight deployment complete; 2 beta testers invited
+**Last Completed**: Initial beta feedback received from both testers; implementation plan defined
 
-**Next Immediate Task**: Gather feedback from beta testers on breathing exercise experience
+**Next Immediate Task**: Step 1 - Foundation Setup (add notification dependencies)
 
-**Version Tracking**: Git tag v4 marks the source code for this TestFlight build
+**Version Tracking**: 
+- Git tag v4 marks source code for TestFlight build 1.0.0+1
+- Working toward version 1.1.0 with screen lock fix
 
 **Blockers**: None
 
 ## Known Issues
 
-### Critical (Documented, Accepted for Beta)
+### In Progress (Being Fixed)
 
 **Screen Lock Timer Failure**
 
 - **Issue**: Timer stops when device screen locks
-- **Impact**: Users must keep screen unlocked during 20-minute session
+- **Impact**: 
+  - Users must manually disable auto-lock in Settings before each practice
+  - Users must remember to re-enable auto-lock after practice
+  - **Security Risk**: Forgetting to re-enable leaves device unprotected
 - **Root Cause**: iOS/Android suspend apps; `Future.delayed()` stops counting
 - **Documented In**: ADR-001
-- **Solution Identified**: Use OS-native notifications
-- **Decision**: Accept for beta; gather feedback before implementing fix
-- **Workaround**: Instruct beta testers to disable auto-lock or keep screen on
+- **Solution**: Use OS-native notifications (implementation plan defined)
+- **Beta Feedback**: Testers' most urgent need; #1 priority
+- **Status**: Starting implementation (Step 1 of 11)
+- **Target Version**: 1.1.0
 
 ### Non-Critical
 
@@ -187,14 +219,15 @@ None currently identified.
 - ✅ Progress bar visual accuracy
 - ✅ Debug mode rapid iteration (16-second sessions)
 - ✅ Screen lock behavior (confirmed issue)
+- ✅ TestFlight beta installation process (both testers)
+- ✅ Real-world usage by target users (initial feedback received)
 
 ### Testing Gaps
 
-- ⏳ TestFlight beta installation process
-- ⏳ Real-world usage by target users (wife and friend)
 - ⏳ Extended battery usage during session
 - ⏳ Behavior with incoming calls/notifications during session
 - ⏳ Multiple consecutive sessions
+- ⏳ Comprehensive user feedback (ongoing)
 
 ## Metrics
 
