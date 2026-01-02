@@ -14,37 +14,13 @@ This ADR evaluates 9 testing approaches for implementing the notification-based 
 
 ## Context
 
-The app is undergoing a significant architectural change to fix the screen lock issue (as documented in ADR-001). The current implementation uses `Future.delayed()` for timing, which will be replaced with OS-native scheduled notifications. This is a risky redesign that could break core functionality.
+The app is undergoing a significant architectural change to fix the screen lock issue (as documented in ADR-001). The redesign replaces `Future.delayed()` with OS-native scheduled notifications, which is a risky change affecting core timing, audio delivery, UI state management, and notification handling.
 
-### Current Implementation
+**Key risks**: Timing accuracy, audio delivery via notifications, session sequencing, progress bar crashes, permission handling, and edge cases (multiple schedules, cancellations, rapid restarts).
 
-- Sequential async execution using `Future.delayed()`
-- In-app audio playback for both instructions and gong sounds
-- Progress bar updates every 500ms via periodic timer
-- 7-session sequence with precise timing
-- Debug mode (2 minutes) and release mode (20 minutes)
+**Testing challenge**: Automated tests cannot verify locked-screen notification delivery - the primary feature. However, they can verify notification scheduling, timing calculations, and existing functionality preservation.
 
-### Upcoming Changes
-
-- Replace `Future.delayed()` with notification scheduling
-- Gong sounds delivered via notification system (at minimum)
-- App must handle background/foreground transitions
-- Notification permissions required
-- State restoration when returning from background
-- Notification cancellation management
-
-### Key Risks
-
-1. **Timing accuracy**: Notifications might fire at wrong times
-2. **Audio delivery**: Gong sounds might not play via notifications
-3. **Session sequence**: Sessions might execute out of order
-4. **Progress bar**: UI might crash when returning from background
-5. **Permission handling**: App might crash if permissions denied
-6. **Edge cases**: Multiple notification sets, early cancellation, rapid restarts
-
-### Testing Challenge
-
-There is a fundamental testability gap: automated tests cannot verify that notifications fire correctly when the device screen is locked, which is the primary feature being implemented. However, automated tests can verify notification scheduling, timing calculations, and that existing functionality doesn't break.
+See Appendix A for detailed implementation comparison and risk analysis.
 
 ## Decision Drivers
 
@@ -537,4 +513,44 @@ All testing strategies must be supplemented with manual verification:
 **Advanced approach**: Consider combining Option 4 with Option 5 elements - create `TimerStrategy` abstraction to test both old and new implementations against same contract. Enables instant rollback and side-by-side comparison during development.
 
 **Critical reminder**: All automated testing options have a testability gap - they cannot verify notifications fire when screen is locked. Manual testing remains essential for validating the core requirement regardless of which option is selected.
+
+## Appendix A: Detailed Context and Risk Analysis
+
+### Current Implementation
+
+- Sequential async execution using `Future.delayed()`
+- In-app audio playback for both instructions and gong sounds
+- Progress bar updates every 500ms via periodic timer
+- 7-session sequence with precise timing
+- Debug mode (2 minutes) and release mode (20 minutes)
+
+### Upcoming Changes in Redesign
+
+- Replace `Future.delayed()` with notification scheduling
+- Gong sounds delivered via notification system (at minimum)
+- App must handle background/foreground transitions
+- Notification permissions required
+- State restoration when returning from background
+- Notification cancellation management
+
+### Detailed Risk Analysis
+
+1. **Timing accuracy**: Notifications might fire at wrong times
+2. **Audio delivery**: Gong sounds might not play via notifications
+3. **Session sequence**: Sessions might execute out of order
+4. **Progress bar**: UI might crash when returning from background
+5. **Permission handling**: App might crash if permissions denied
+6. **Edge cases**: Multiple notification sets, early cancellation, rapid restarts
+
+### The Testability Gap
+
+Automated tests cannot verify that notifications fire correctly when the device screen is locked, which is the primary feature being implemented. This is a fundamental platform constraint - test frameworks cannot programmatically lock the device screen.
+
+However, automated tests can verify:
+
+- Notification scheduling (correct times, sounds, count)
+- Timing calculations
+- Existing functionality preservation (audio, UI, session sequence)
+- Platform integration (via inspection APIs)
+
 
