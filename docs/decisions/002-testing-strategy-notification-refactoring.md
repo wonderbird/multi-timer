@@ -6,11 +6,14 @@ Proposed
 
 ## Executive Summary
 
-This ADR evaluates 9 testing approaches for implementing the notification-based timer (ADR-001 fix). The redesign replaces `Future.delayed()` with OS-native notifications, which is a risky architectural change affecting internal implementation. Key finding: **Option 4 (Hybrid Pyramid)** or **Option 3 (Integration Tests)** provide the best balance of safety, speed, and coverage.
+This ADR evaluates 9 testing approaches for the notification-based timer redesign (ADR-001). The redesign replaces `Future.delayed()` timing with OS-native notifications - a risky architectural change.
 
-**Critical constraint:** Automated tests cannot verify locked-screen notification delivery. Manual testing remains essential for the primary feature.
+**Top recommendations:**
 
-**Recommended:** Option 3 (Integration Tests) for time-constrained scenario (2-3 hours), or Option 4 (Hybrid Pyramid) for comprehensive coverage (5-6 hours).
+- **Option 3 (Integration Tests)**: Best for time-constrained (2-3 hours, 20/25 score)
+- **Option 4 (Hybrid Pyramid)**: Best for comprehensive coverage (5-6 hours, 21/25 score)
+
+**Critical constraint:** Automated tests cannot verify locked-screen notification delivery. Manual testing remains essential.
 
 ## Context
 
@@ -462,7 +465,7 @@ Integration tests should use debug mode for reasonable execution time while stil
 
 ### Testing Testability Gap
 
-**Critical limitation**: Automated tests cannot verify the primary feature (notifications firing when screen is locked). This is a fundamental platform constraint - test frameworks cannot programmatically lock the device screen and verify notification delivery.
+**Critical limitation**: Automated tests cannot verify notifications firing when screen is locked - the primary feature. This is a fundamental platform constraint; test frameworks cannot programmatically lock the device screen.
 
 **Implication**: Manual testing remains essential for validating the core requirement regardless of which automated testing option is chosen.
 
@@ -504,15 +507,15 @@ All testing strategies must be supplemented with manual verification:
 
 ## Implementation Notes
 
-**Recommended Option**: Based on the comparison matrix and decision drivers, **Option 3 (Integration Tests)** or **Option 4 (Hybrid Pyramid)** are recommended depending on time constraints.
+**Recommended approaches** based on comparison matrix and decision drivers:
 
-**For time-constrained (2-3 hours)**: Choose Option 3. Write 2-5 integration tests covering critical paths. Verify notification scheduling via platform APIs. Supplement with manual testing checklist for locked-screen behavior.
+- **Time-constrained (2-3 hours)**: Choose Option 3 (Integration Tests). Write 2-5 tests covering critical paths. Verify notification scheduling via platform APIs. Score: 20/25.
 
-**For comprehensive coverage (5-6 hours)**: Choose Option 4. Combine unit tests (fast feedback), widget tests (UI verification), and integration tests (end-to-end confidence). Standard industry approach with best coverage (21/25).
+- **Comprehensive (5-6 hours)**: Choose Option 4 (Hybrid Pyramid). Combine unit, widget, and integration tests. Industry-standard approach. Score: 21/25.
 
-**Advanced approach**: Consider combining Option 4 with Option 5 elements - create `TimerStrategy` abstraction to test both old and new implementations against same contract. Enables instant rollback and side-by-side comparison during development.
+- **Advanced**: Combine Option 4 + Option 5 elements. Create `TimerStrategy` abstraction to test both implementations against same contract. Enables instant rollback and comparison.
 
-**Critical reminder**: All automated testing options have a testability gap - they cannot verify notifications fire when screen is locked. Manual testing remains essential for validating the core requirement regardless of which option is selected.
+**Critical reminder**: All options have a testability gap - cannot verify locked-screen notification delivery. Manual testing checklist (see Technical Considerations) is mandatory regardless of chosen option.
 
 ## Appendix A: Detailed Context and Risk Analysis
 
@@ -542,9 +545,9 @@ All testing strategies must be supplemented with manual verification:
 5. **Permission handling**: App might crash if permissions denied
 6. **Edge cases**: Multiple notification sets, early cancellation, rapid restarts
 
-### The Testability Gap
+### The Testability Gap Explained
 
-Automated tests cannot verify that notifications fire correctly when the device screen is locked, which is the primary feature being implemented. This is a fundamental platform constraint - test frameworks cannot programmatically lock the device screen.
+Automated tests cannot verify notifications fire correctly when the device screen is locked - the primary feature. This is a fundamental platform constraint; test frameworks cannot programmatically lock screens.
 
 However, automated tests can verify:
 
