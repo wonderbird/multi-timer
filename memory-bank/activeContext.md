@@ -8,7 +8,20 @@ Implement notification-based timing approach (documented in ADR-001) so users ca
 
 ## Current Focus
 
-**Implementing Notification-Based Background Timing** (next up)
+### Goal A: Run app in iOS Simulator via command line
+
+- Run `flutter run` on Mac with simulator destination
+- Prerequisite: iOS Simulator runtime installed (iOS 26.0 — confirmed)
+- Status: Not yet tested
+
+### Goal B: Run app in iOS Simulator via Xcode GUI
+
+- Use Product → Build in Xcode with simulator destination
+- Blocked by: Xcode sandboxing issue (see techContext.md → Known Limitations)
+- Fix prepared in `ios/Podfile` (not yet committed)
+- Status: Needs testing after commit and sync
+
+### Up next: Notification-based background timing
 
 Replacing `Future.delayed()` timer approach with OS-native scheduled notifications to maintain accurate timing when screen locks.
 

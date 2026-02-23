@@ -137,16 +137,21 @@ flutter:
 ### Development Workflow
 
 1. **Edit**: AI agent in Linux VM
-2. **Sync**: rsync to Mac
-3. **Build**: Xcode on Mac
-4. **Test**: Physical iPhone device
+2. **Sync**: rsync or git to Mac
+3. **Build**: `flutter build ios` or `flutter run` on Mac
+4. **Test**: Physical iPhone or iOS Simulator
 5. **Commit**: Git with conventional commit messages
+
+### CLI vs Xcode GUI builds
+
+`flutter build ios` and `flutter run` invoke `xcodebuild` with their own build settings that override project defaults. Xcode's Product → Build uses project settings directly. This means issues like sandboxing (see Known Limitations) only surface when building via Xcode GUI, not via Flutter CLI.
 
 ## Testing Strategy
 
 ### Manual Testing
 
 - Physical iPhone device (USB connection)
+- iOS Simulator (iOS 26.0 runtime installed)
 - Debug mode with 16-second sessions for rapid iteration
 - Free Apple Developer account sufficient for device testing
 
@@ -180,6 +185,7 @@ flutter:
 2. **Audio Format**: MP3 works for current implementation; iOS notifications would require AIFF conversion
 3. **Single Platform Focus**: iOS only for current iteration
 4. **Network**: App fully offline; no network requirements
+5. **Xcode GUI Sandboxing**: Since Xcode 15, `ENABLE_USER_SCRIPT_SANDBOXING` defaults to `YES` for new projects. CocoaPods script phases don't declare all inputs/outputs, causing "located outside of the allowed root paths" errors when building via Product → Build. Fix: set `ENABLE_USER_SCRIPT_SANDBOXING = NO` in Podfile `post_install` hook. Reference: [CocoaPods #11946](https://github.com/CocoaPods/CocoaPods/issues/11946)
 
 ### Future Technical Considerations
 
