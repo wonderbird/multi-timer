@@ -49,6 +49,11 @@ Multi Timer is a Flutter mobile application designed to guide users through a sp
 5. ✅ Gather initial user feedback to inform next iteration
 6. ⏳ Continue gathering user feedback for future development decisions
 
+### v1.0.0+2 ✅
+
+1. ✅ Increased volume of German voice instruction audio files
+2. ✅ Deployed to TestFlight
+
 ### Next Release (v1.1.0) ⏳
 
 1. ⏳ Complete 20-minute sequence executes correctly **with screen locked**

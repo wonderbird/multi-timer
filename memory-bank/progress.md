@@ -18,6 +18,7 @@
 - ✅ Reliable audio playback (fixed race condition)
 - ✅ Proper timing coordination (audio + delay + gong)
 - ✅ Audio file organization (release/ directory)
+- ✅ Audio volume increased for voice instructions (v1.0.0+2)
 - ✅ All exercise audios integrated:
   - Ganzkörperatmung (full body breathing)
   - Atem-halten (breath holding)
@@ -88,8 +89,6 @@ TestFlight deployment completed. App is live in TestFlight with 2 beta testers i
 **Full deployment process documented in**: `docs/appstore-submission-de-DE/README.md`
 
 ### Future Enhancements ⏸️ (Pending Further Feedback)
-
-- ⏳ Audio volume adjustment (beta tester feedback: increase instruction audio volume)
 - ⏸️ Android deployment
 - ⏸️ Additional breathing exercise sequences
 - ⏸️ Customizable timer durations
@@ -101,12 +100,13 @@ TestFlight deployment completed. App is live in TestFlight with 2 beta testers i
 
 **Phase**: Implementing screen lock fix based on beta feedback
 
-**Last Completed**: Initial beta feedback received from both testers; implementation plan defined
+**Last Completed**: Audio volume increased (v1.0.0+2); deployed to TestFlight Jan 17, 2026
 
-**Next Immediate Task**: Step 1 - Foundation Setup (add notification dependencies)
+**Next Immediate Task**: Step 1 - Foundation Setup (add notification dependencies for screen lock fix)
 
-**Version Tracking**: 
+**Version Tracking**:
 - Git tag v4 marks source code for TestFlight build 1.0.0+1
+- 1.0.0+2 deployed to TestFlight: audio volume increase
 - Working toward version 1.1.0 with screen lock fix
 
 **Blockers**: None

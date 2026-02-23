@@ -8,9 +8,11 @@ Implement notification-based timing approach (documented in ADR-001) so users ca
 
 ## Current Focus
 
-**Implementing Notification-Based Background Timing**
+**Implementing Notification-Based Background Timing** (next up)
 
 Replacing `Future.delayed()` timer approach with OS-native scheduled notifications to maintain accurate timing when screen locks.
+
+**Previous Achievement**: Audio volume increased and deployed as v1.0.0+2. All 4 German voice instruction audio files were re-exported at higher volume. Deployed to TestFlight.
 
 **Previous Achievement**: TestFlight deployment completed successfully. All 8 steps completed:
 - ✅ App Store Connect record created
@@ -29,9 +31,9 @@ Replacing `Future.delayed()` timer approach with OS-native scheduled notificatio
 - Bundle identifier: `systems.boos.multiTimer` (registered in Apple Developer portal)
 - App Store Connect name: "Multi Timer für Atempraxis"
 - Local display name: "Multi Timer" (in Info.plist)
-- Version: 1.0.0+1
+- Version: 1.0.0+2 (current TestFlight build)
 - App icons: Complete set including 1024x1024 for App Store
-- Git tag: v4 (tracks this TestFlight build source code)
+- Git tag: v4 (tracks build 1.0.0+1; build 1.0.0+2 not separately tagged)
 
 ## Recent Changes
 
@@ -48,11 +50,12 @@ Replacing `Future.delayed()` timer approach with OS-native scheduled notificatio
   - Creates friction and cognitive burden (pre/post practice routine)
 - **Decision**: Implement notification-based approach from ADR-001
 
-**Priority 2: Audio Volume**
+**Priority 2: Audio Volume** ✅ Resolved in v1.0.0+2
 
-- One beta tester suggested increasing the volume of the audio instructions (details limited; follow-up needed)
-- **Impact**: Refinement - app is usable but audio could be clearer
-- **Decision**: Address after screen lock fix is deployed
+- Beta tester suggested increasing the volume of the audio instructions
+- **Impact**: Refinement - app was usable but audio could be clearer
+- **Solution**: Re-exported all 4 German voice instruction audio files at higher volume
+- **Released**: v1.0.0+2 deployed to TestFlight (build: Jan 17, 2026)
 
 **Prioritization Rationale**: Screen lock issue creates security risk (users may forget to re-enable auto-lock) and adds friction to every practice session. Audio volume is an enhancement that can be addressed in a subsequent release.
 
