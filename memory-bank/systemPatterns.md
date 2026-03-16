@@ -183,7 +183,8 @@ Minimal dependency graph - appropriate for single-purpose application.
 
 **Solution documented in ADR-001**: Use OS-native notifications instead of Dart timers.
 
-**Decision**: Accept limitation for beta release; implement if beta feedback warrants it.
+**Decision**: Accepted (ADR-001). Implementing notification-based
+approach with `flutter_local_notifications`.
 
 ### Flutter/Dart Version
 

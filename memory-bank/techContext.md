@@ -159,9 +159,17 @@ flutter:
 
 ### Automated Testing
 
-- No automated tests currently
-- Flutter test framework available but not utilized
-- Appropriate for small, single-purpose app
+Three-layer strategy accepted (ADR-002):
+
+- **Unit tests** — `test/unit/` — timing logic and notification
+  schedule verification; requires `TimerSchedule` extraction
+- **Widget tests** — `test/widget/` — UI state transitions;
+  requires injectable `AudioPlayer`; tools: `fake_async`,
+  `mocktail`
+- **Manual protocol** — screen lock on real devices before each
+  release; see `docs/architecture/concepts/test-strategy.md`
+
+Implementation pending `TimerSchedule` extraction (Step 0).
 
 ## Build Modes
 

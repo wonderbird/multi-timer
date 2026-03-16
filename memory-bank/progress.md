@@ -40,7 +40,8 @@
 - ✅ Rsync workflow from Linux VM to Mac
 - ✅ Git version control with conventional commits
 - ✅ Debug/release mode switching
-- ✅ Architecture decision documentation (ADR-001)
+- ✅ Architecture decision documentation (ADR-001 accepted,
+  ADR-002 accepted)
 
 ## What's Left to Build
 
@@ -52,6 +53,8 @@
 
 **Implementation Steps**:
 
+0. ⏳ Extract `TimerSchedule` — prerequisite for both testing
+   (ADR-002) and notification schedule calculation (ADR-001)
 1. ⏳ Foundation Setup - Add dependencies and configuration
 2. ⏳ Permission Flow - Request notification permissions
 3. ⏳ Single Notification Proof - Validate notifications fire while locked
@@ -67,6 +70,22 @@
 **Status**: Starting Step 1 (Foundation Setup)
 
 **Next TestFlight Release**: Version 1.1.0 with screen lock fix
+
+### Testing Infrastructure 🚧 (Pending Step 0)
+
+**Decision**: Three-layer approach (ADR-002 accepted)
+
+**Layers**:
+
+- ⏳ Unit tests — extract `TimerSchedule`, test timing arithmetic
+  and notification schedule (7 boundary times). Tools: `test`
+  package. Prerequisite: Step 0 (TimerSchedule extraction).
+- ⏳ Widget tests — inject `AudioPlayer`, test UI state transitions
+  with `fake_async` and `mocktail`. Prerequisite: Step 0.
+- ⏳ Manual protocol — screen lock checklist on real devices.
+  Prerequisite: ADR-001 implementation complete (Step 11).
+
+**Reference**: `docs/architecture/concepts/test-strategy.md`
 
 ### TestFlight Deployment ✅ (Completed)
 

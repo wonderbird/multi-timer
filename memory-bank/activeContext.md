@@ -89,13 +89,28 @@ The git history shows steady development of the core breathing timer functionali
 - ✅ Screen lock fix is the #1 priority (beta testers' most urgent need)
 - ✅ Proceeding with notification-based approach from ADR-001
 
+### Accepted Architecture Decisions
+
+- ✅ ADR-001: Accepted — `flutter_local_notifications` chosen for
+  background timer reliability
+- ✅ ADR-002: Accepted — three-layer testing strategy
+  (unit, widget, manual) chosen for notification refactoring
+
 ### Current Implementation Approach
 
-- **Single increment delivery**: Develop complete feature with 11 testable intermediate steps
-- **Steps 1-7**: Additive infrastructure and validation (don't break existing functionality)
+- **Single increment delivery**: Develop complete feature with 11
+  testable intermediate steps
+- **Steps 1-7**: Additive infrastructure and validation (don't break
+  existing functionality)
 - **Step 8**: Transformation (replace timer with notifications)
 - **Steps 9-11**: Refinement and edge case handling
 - **Each step independently testable and committable**
+
+**Prerequisite (Step 0): Extract `TimerSchedule`** — extract timing
+logic from `_TimerScreenState` into `lib/timer_schedule.dart`. This
+is required before unit tests can be written (ADR-002) and also
+provides the notification schedule calculation (ADR-001). Should be
+done before or alongside Step 1.
 
 ### Still Pending Beta Feedback
 
@@ -141,13 +156,36 @@ The code subtracts audio and gong durations from total session time to achieve p
 
 ## Next Immediate Step
 
-**Step 1: Foundation Setup**
+**Step 0: Extract `TimerSchedule` (Prerequisite)**
+
+Extract timing logic from `_TimerScreenState` into a plain Dart
+class `lib/timer_schedule.dart`. No behaviour change.
+
+Tasks:
+
+- Create `PlaybackEvent` value class (audioFile, offsetMs)
+- Create `TimerSchedule` class with `totalDurationMs` getter and
+  `buildEvents()` method
+- Replace inline timing calculations in `_startTimer()` with calls
+  to `TimerSchedule`
+- Write unit tests in `test/unit/timer_schedule_test.dart`
+
+Success criteria:
+
+- All existing behaviour identical (same timing, same audio)
+- Unit tests pass for timing arithmetic and playback schedule
+- `flutter test test/unit/` succeeds
+
+Expected commit: `refactor: extract TimerSchedule for testability`
+
+**Step 1: Foundation Setup** (after Step 0)
 
 Add notification infrastructure without changing app behavior.
 
 Tasks:
 
-- Add `flutter_local_notifications` and `timezone` dependencies to pubspec.yaml
+- Add `flutter_local_notifications` and `timezone` dependencies to
+  pubspec.yaml
 - Configure iOS (Info.plist permissions)
 - Configure Android (AndroidManifest.xml)
 - Initialize notification plugin in main()
@@ -156,9 +194,10 @@ Success criteria:
 
 - `flutter pub get` succeeds
 - App builds and runs without errors
-- No behavior change - timer still works as before
+- No behavior change — timer still works as before
 
-Expected commit: `build(deps): add flutter_local_notifications for background timing`
+Expected commit:
+`build(deps): add flutter_local_notifications for background timing`
 
 ## Blockers
 
