@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Accepted
 
 ## Executive Summary
 
@@ -394,15 +394,42 @@ If Option 1 is selected, suggested implementation phases:
 
 ## Decision
 
-[To be decided by stakeholder]
+Option 1: Implement Local Notifications with
+`flutter_local_notifications`. This is the industry-standard
+approach for timer apps: reliable on both iOS and Android,
+OS-managed timing, minimal battery impact, and strong community
+support.
 
 ## Consequences
 
-[To be completed after decision is made]
+### Positive
+
+- Timer delivery is reliable when the screen is locked on both
+  iOS and Android
+- OS handles scheduling independently of app lifecycle
+- Minimal battery impact compared to wakelock approaches
+- Well-documented package with extensive examples
+
+### Negative
+
+- Requires platform-specific configuration
+  (AndroidManifest.xml, Info.plist)
+- Notification permissions must be requested from the user
+- iOS requires AIFF sound format; gong.mp3 must be converted
+- Notifications appear in the system tray during the session
 
 ## Implementation Notes
 
-[To be completed after decision is made]
+The implementation follows the 11-step migration plan
+documented in `memory-bank/activeContext.md`.
+
+A prerequisite for both the notification implementation and
+the testing strategy (ADR-002) is extracting timing logic
+into a plain Dart `TimerSchedule` class. This class calculates
+`PlaybackEvent` offsets that map directly to notification fire
+times (session boundary times: 300 s, 360 s, 660 s, 720 s,
+1020 s, 1140 s, 1200 s). See
+`docs/architecture/concepts/test-strategy.md` for details.
 
 ## Appendix: Detailed Problem Analysis
 
@@ -435,5 +462,5 @@ The current implementation lacks:
 - OS-native timing mechanisms that work when app is suspended
 - Any wake locks or foreground services
 - Local notification scheduling
-- An active audio session that would grant iOS background execution as an audio app
-
+- An active audio session that would grant iOS background
+  execution as an audio app
