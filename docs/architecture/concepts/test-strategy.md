@@ -1,5 +1,17 @@
 # Test Strategy — Multi Timer
 
+## Decision Context
+
+This document is the **how** — concrete implementation guidance
+for the testing strategy.
+
+- **ADR-002** is the **why** — the decision rationale and option
+  comparison that led to the three-layer approach documented here.
+- **ADR-001** documents the architectural change (notification-
+  based timer) that this testing strategy is designed to support.
+
+---
+
 ## Overview
 
 Multi Timer plays a fixed sequence of guided-audio sessions followed by a gong.
@@ -30,6 +42,18 @@ Pure Dart logic with no Flutter framework or hardware dependency.
 
 All timing logic currently lives inside `_TimerScreenState`. It must be
 extracted into a plain Dart class before unit tests can be written.
+
+This extraction serves a dual purpose:
+
+1. **Testability** — `TimerSchedule` is a pure Dart class with no
+   Flutter or hardware dependency; it can be unit-tested directly.
+2. **Notification scheduling** — the `offsetMs` values produced by
+   `buildEvents()` for gong events are the notification fire times
+   used by `flutter_local_notifications` (ADR-001). In the
+   notification-based implementation the gong sound is delivered by
+   the OS notification at the session boundary, so the fire time
+   equals the cumulative session boundary (not boundary minus
+   `kGongDurationMs` as in the current in-app approach).
 Suggested structure:
 
 ```dart
@@ -103,6 +127,44 @@ void main() {
   });
 }
 ```
+
+### Notification schedule verification
+
+`buildEvents()` can be used to verify the notification fire times
+computed for `flutter_local_notifications`. The expected release-
+mode boundary times (cumulative seconds from t = 0) are:
+
+| Session | Boundary (s) | Expected notification time |
+| ------- | ------------ | -------------------------- |
+| 1       | 300          | t = 300 000 ms             |
+| 2       | 360          | t = 360 000 ms             |
+| 3       | 660          | t = 660 000 ms             |
+| 4       | 720          | t = 720 000 ms             |
+| 5       | 1020         | t = 1 020 000 ms           |
+| 6       | 1140         | t = 1 140 000 ms           |
+| 7       | 1200         | t = 1 200 000 ms           |
+
+Example test (verifies gong offsets for all 7 release sessions):
+
+```dart
+test('gong events fire at session boundaries', () {
+  final schedule = TimerSchedule(releaseSessions);
+  final gongs = schedule
+      .buildEvents()
+      .where((e) => e.audioFile == 'gong.mp3')
+      .toList();
+  expect(gongs.map((e) => e.offsetMs), equals([
+    300000, 360000, 660000, 720000, 1020000, 1140000, 1200000,
+  ]));
+});
+```
+
+Note: in the current in-app implementation the gong *starts*
+`kGongDurationMs` (6 080 ms) before the boundary so it *finishes*
+at the boundary. In the notification-based approach the OS fires
+the notification at the boundary and plays the gong from that
+point. `buildEvents()` will need to be updated to reflect this
+when the notification implementation is added.
 
 ### Unit test tools
 
