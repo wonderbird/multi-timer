@@ -1,0 +1,30 @@
+{
+  "name": "multi-timer",
+  "version": "1.0.0",
+  "description": "An iOS app that guides you through a 20-minute breathing exercise rooted in shamanic and yoga traditions.",
+  "main": "index.js",
+  "private": true,
+  "directories": {
+    "doc": "docs",
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wonderbird/multi-timer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/wonderbird/multi-timer/issues"
+  },
+  "homepage": "https://github.com/wonderbird/multi-timer#readme",
+  "devDependencies": {
+    "markdownlint-cli": "^0.48.0"
+  }
+}
