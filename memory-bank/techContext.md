@@ -67,7 +67,9 @@ multi-timer/
   │   ├── debug/
   │   └── release/
   ├── docs/
-  │   └── decisions/              # Architecture Decision Records
+  │   ├── appstore-submission-de-DE/  # App Store submission materials (German)
+  │   ├── architecture/               # Architecture documentation and ADRs
+  │   └── features/                   # Feature documentation
   ├── ios/                        # iOS platform code
   │   └── Runner.xcodeproj/
   ├── lib/
