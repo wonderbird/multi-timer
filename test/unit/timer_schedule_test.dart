@@ -1,4 +1,5 @@
 import 'package:multi_timer/main.dart';
+import 'package:multi_timer/session_data.dart';
 import 'package:multi_timer/timer_event.dart';
 import 'package:test/test.dart';
 import 'package:multi_timer/timer_schedule.dart';

@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'dart:async';
 
+import 'package:multi_timer/session_data.dart';
+
 void main() {
   runApp(const MultiTimerApp());
 }
@@ -28,15 +30,6 @@ class TimerScreen extends StatefulWidget {
 
   @override
   State<TimerScreen> createState() => _TimerScreenState();
-}
-
-// Session data class to hold duration and optional audio file
-class SessionData {
-  final int durationMs; // Duration of the session in milliseconds
-  final String? audioFile; // Optional audio file to play before the session
-  final int audioDurationMs; // Duration of the audio file in milliseconds
-
-  SessionData(this.durationMs, [this.audioFile, this.audioDurationMs = 0]);
 }
 
 const int kGongDurationMs = 6080;
