@@ -1,10 +1,5 @@
-import 'package:equatable/equatable.dart';
+import 'package:multi_timer/timer_event.dart';
 
-class ExerciseFinishedEvent extends Equatable {
-  final int offsetMs;
-
-  const ExerciseFinishedEvent({required this.offsetMs});
-
-  @override
-  List<Object?> get props => [offsetMs];
+class ExerciseFinishedEvent extends TimerEvent {
+  const ExerciseFinishedEvent({required super.offsetMs});
 }

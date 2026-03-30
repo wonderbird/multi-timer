@@ -28,13 +28,17 @@ No complex state management needed for this single-flow application.
 
 ```dart
 class SessionData {
-  final int durationSeconds;        // Total session duration
-  final String? audioFile;          // Optional instruction audio
-  final int audioDurationMs;        // Audio file length
+  final int durationSeconds;                    // Total session duration (seconds)
+  int get durationMs => durationSeconds * 1000; // Convenience getter — use this in new code
+  final String? audioFile;                      // Optional instruction audio
+  final int audioDurationMs;                    // Audio file length
 }
 ```
 
 Sessions defined as compile-time constants, different for debug vs. release builds.
+
+**Pending cleanup (Step 0b)**: rename `durationSeconds` → `durationMs`,
+remove the getter, update all `SessionData(...)` construction sites.
 
 ## Audio Playback Pattern
 
@@ -158,6 +162,35 @@ Separate timer for UI updates:
 - **Solution**: Calculate progress based on wall-clock elapsed time, not session state
 - **Benefit**: Smooth, predictable progress bar advancement
 
+## TimerEvent Model (New — Step 0)
+
+A new event hierarchy has been introduced to decouple timing logic
+from UI and audio execution:
+
+```
+TimerEvent (abstract, lib/timer_event.dart)
+  ├── ExerciseFinishedEvent (lib/exercise_finished_event.dart)
+  │     offsetMs: total duration of all sessions
+  └── PlaybackRequestedEvent (lib/playback_requested_event.dart)
+        offsetMs: when to play (ms from exercise start)
+        audioFile: path to audio asset
+```
+
+`TimerSchedule(List<SessionData>).buildEvents()` returns
+`List<TimerEvent>` — a pure calculation with no side effects.
+Testable without Flutter, audio, or timers.
+
+**Internal helpers** (all stateless, return values):
+- `produceOptionalSessionStartPlaybackEvent` → `List<PlaybackRequestedEvent>` (empty if no audio)
+- `produceSessionEndPlaybackEvent` → `PlaybackRequestedEvent` (gong)
+- `produceExerciseFinishedEvent` → `ExerciseFinishedEvent`
+
+**Design decision**: optional events return `List<T>` (not `T?`) so
+the call site can use `addAll` — cleaner than a null check + `add`.
+
+**Equatable** is used for value equality on all event classes.
+Pattern-match on event type using Dart 3 `switch` expressions.
+
 ## Component Relationships
 
 ```
@@ -165,8 +198,10 @@ MultiTimerApp (MaterialApp)
   └── TimerScreen (StatefulWidget)
       ├── AudioPlayer (audioplayers package)
       ├── SessionData list (compile-time constant)
+      ├── TimerSchedule (new — pure calculation)
+      │     └── List<TimerEvent> (PlaybackRequestedEvent, ExerciseFinishedEvent)
       ├── Progress timer (periodic 500ms)
-      └── Session execution (sequential async)
+      └── Session execution (sequential async — to be replaced by notifications)
 ```
 
 Minimal dependency graph - appropriate for single-purpose application.

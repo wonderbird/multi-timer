@@ -33,6 +33,7 @@ class TimerScreen extends StatefulWidget {
 // Session data class to hold duration and optional audio file
 class SessionData {
   final int durationSeconds;
+  int get durationMs => durationSeconds * 1000;
   final String? audioFile; // Optional audio file to play before the session
   final int audioDurationMs; // Duration of the audio file in milliseconds
 
@@ -40,6 +41,7 @@ class SessionData {
 }
 
 const int kGongDurationMs = 6080;
+const String kGongAudioFile = 'gong.mp3';
 
 class _TimerScreenState extends State<TimerScreen> {
   bool _isCounting = false;
@@ -76,7 +78,7 @@ class _TimerScreenState extends State<TimerScreen> {
 
   int _calculateTotalDuration() {
     return _sessions.fold(0, (sum, session) {
-      return sum + session.durationSeconds * 1000;
+      return sum + session.durationMs;
     });
   }
 
@@ -130,8 +132,7 @@ class _TimerScreenState extends State<TimerScreen> {
     for (int i = 0; i < _sessions.length; i++) {
       SessionData session = _sessions[i];
 
-      int remainingDurationMs =
-          session.durationSeconds * 1000 - kGongDurationMs;
+      int remainingDurationMs = session.durationMs - kGongDurationMs;
 
       if (session.audioFile != null) {
         remainingDurationMs -= session.audioDurationMs;
@@ -142,7 +143,7 @@ class _TimerScreenState extends State<TimerScreen> {
         await Future.delayed(Duration(milliseconds: remainingDurationMs));
       }
 
-      await _playAudioAndWait('gong.mp3');
+      await _playAudioAndWait(kGongAudioFile);
     }
 
     _progressTimer?.cancel();

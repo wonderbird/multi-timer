@@ -16,6 +16,8 @@
 flutter: (sdk)
 cupertino_icons: ^1.0.8
 audioplayers: ^6.5.1
+equatable: ^2.0.8
+objective_c: 9.1.0  # pinned — workaround for iOS validation warning, see test/objective_c_test.dart
 ```
 
 #### Development Dependencies
@@ -23,6 +25,8 @@ audioplayers: ^6.5.1
 ```yaml
 flutter_test: (sdk)
 flutter_lints: ^6.0.0
+test: ^1.29.0
+pub_api_client: ^3.2.0
 ```
 
 ### Audio Package
@@ -161,15 +165,17 @@ flutter:
 
 Three-layer strategy accepted (ADR-002):
 
-- **Unit tests** — `test/unit/` — timing logic and notification
-  schedule verification; requires `TimerSchedule` extraction
+- **Unit tests** — `test/unit/timer_schedule_test.dart` — in
+  progress. `TimerSchedule` and event classes extracted and tested.
+  Run with: `flutter test test/unit/`
+- **Integration test** — `test/objective_c_test.dart` — checks
+  whether `objective_c` package pin can be removed. Run with:
+  `flutter test test/objective_c_test.dart` (makes network call)
 - **Widget tests** — `test/widget/` — UI state transitions;
   requires injectable `AudioPlayer`; tools: `fake_async`,
-  `mocktail`
+  `mocktail`. Not yet started.
 - **Manual protocol** — screen lock on real devices before each
   release; see `docs/architecture/concepts/test-strategy.md`
-
-Implementation pending `TimerSchedule` extraction (Step 0).
 
 ## Build Modes
 

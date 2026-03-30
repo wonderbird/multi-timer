@@ -8,18 +8,26 @@ Implement notification-based timing approach (documented in ADR-001) so users ca
 
 ## Current Focus
 
-### Goal A: Run app in iOS Simulator via command line
+### Step 0: Extract `TimerSchedule` 🚧 Nearly Complete
 
-- Run `flutter run` on Mac with simulator destination
-- Prerequisite: iOS Simulator runtime installed (iOS 26.0 — confirmed)
-- Status: Not yet tested
+Extracting timing logic from `_TimerScreenState` into a pure Dart class. TDD approach.
 
-### Goal B: Run app in iOS Simulator via Xcode GUI
+**Completed:**
 
-- Use Product → Build in Xcode with simulator destination
-- Blocked by: Xcode sandboxing issue (see techContext.md → Known Limitations)
-- Fix prepared in `ios/Podfile` (not yet committed)
-- Status: Needs testing after commit and sync
+- ✅ `lib/timer_event.dart` — abstract base class with `offsetMs`, `Equatable`
+- ✅ `lib/exercise_finished_event.dart` — extends `TimerEvent`
+- ✅ `lib/playback_requested_event.dart` — extends `TimerEvent`, non-nullable `audioFile`
+- ✅ `lib/timer_schedule.dart` — pure calculation, `buildEvents()` returns `List<TimerEvent>`;
+  stateless helpers: `produceOptionalSessionStartPlaybackEvent` →
+  `List<PlaybackRequestedEvent>`, `produceSessionEndPlaybackEvent` and
+  `produceExerciseFinishedEvent` → single events
+- ✅ `SessionData.durationMs` getter (`durationSeconds * 1000`) — all new code uses this
+- ✅ `kGongAudioFile` constant in `main.dart`
+- ✅ `test/unit/timer_schedule_test.dart` — full suite, all green:
+  - `ExerciseFinishedEvent` offsets: empty, single, three sessions
+  - `PlaybackRequestedEvent`: no sessions, single with audio, single without audio,
+    two sessions (instruction offset, gong offset)
+- ✅ Renamed `_startTimer()` → `_runExerciseSequence()` in `main.dart`
 
 ### Up next: Notification-based background timing
 
@@ -154,29 +162,31 @@ Each session duration accounts for:
 
 The code subtracts audio and gong durations from total session time to achieve precise timing.
 
-## Next Immediate Step
+## Next Immediate Steps
 
-**Step 0: Extract `TimerSchedule` (Prerequisite)**
+**Step 0a — Wire `_runExerciseSequence()` to `TimerSchedule`:**
 
-Extract timing logic from `_TimerScreenState` into a plain Dart
-class `lib/timer_schedule.dart`. No behaviour change.
+Replace the inline timing loop in `_runExerciseSequence()` (lines
+131–147 of `main.dart`) with a call to
+`TimerSchedule(sessions).buildEvents()`. The loop currently calculates
+delays manually using `Future.delayed()`. After this change it drives
+execution by iterating the event list — still via `Future.delayed()`.
+The switch to OS notifications comes in Step 8.
 
-Tasks:
+**Step 0b — Rename `SessionData.durationSeconds` to `durationMs`:**
 
-- Create `PlaybackEvent` value class (audioFile, offsetMs)
-- Create `TimerSchedule` class with `totalDurationMs` getter and
-  `buildEvents()` method
-- Replace inline timing calculations in `_startTimer()` with calls
-  to `TimerSchedule`
-- Write unit tests in `test/unit/timer_schedule_test.dart`
+The backing field is still named `durationSeconds`. New code uses the
+`durationMs` getter, but the constructor and all `SessionData(...)`
+call sites in `main.dart` still pass seconds. Tests compensate with
+`~/ 1000` at construction sites. Fix:
 
-Success criteria:
+1. Rename field `durationSeconds` → `durationMs` in `SessionData`
+2. Remove the `durationMs` getter (now redundant)
+3. Update all `SessionData(...)` call sites in `main.dart` to pass
+   milliseconds
+4. Remove `~/ 1000` from test construction sites
 
-- All existing behaviour identical (same timing, same audio)
-- Unit tests pass for timing arithmetic and playback schedule
-- `flutter test test/unit/` succeeds
-
-Expected commit: `refactor: extract TimerSchedule for testability`
+Do Step 0b before Step 1 to keep the codebase clean.
 
 **Step 1: Foundation Setup** (after Step 0)
 

@@ -53,8 +53,10 @@
 
 **Implementation Steps**:
 
-0. ⏳ Extract `TimerSchedule` — prerequisite for both testing
-   (ADR-002) and notification schedule calculation (ADR-001)
+0. 🚧 Extract `TimerSchedule` — nearly complete. Two items remain
+   (see activeContext.md): (0a) wire `_runExerciseSequence()` to
+   `TimerSchedule.buildEvents()`; (0b) rename `SessionData.durationSeconds`
+   → `durationMs` and remove `~/ 1000` workarounds
 1. ⏳ Foundation Setup - Add dependencies and configuration
 2. ⏳ Permission Flow - Request notification permissions
 3. ⏳ Single Notification Proof - Validate notifications fire while locked
@@ -67,25 +69,36 @@
 10. ⏳ Cleanup & Edge Cases - Cancellation and notification management
 11. ⏳ End-to-End Validation - Real-world testing
 
-**Status**: Starting Step 1 (Foundation Setup)
+**Status**: Step 0 in progress (TimerSchedule extraction, see activeContext.md)
 
 **Next TestFlight Release**: Version 1.1.0 with screen lock fix
 
-### Testing Infrastructure 🚧 (Pending Step 0)
+### Testing Infrastructure 🚧 (In Progress — Step 0)
 
 **Decision**: Three-layer approach (ADR-002 accepted)
 
 **Layers**:
 
-- ⏳ Unit tests — extract `TimerSchedule`, test timing arithmetic
-  and notification schedule (7 boundary times). Tools: `test`
-  package. Prerequisite: Step 0 (TimerSchedule extraction).
+- 🚧 Unit tests — `test/unit/timer_schedule_test.dart` complete for
+  `TimerSchedule`. Covers: `ExerciseFinishedEvent` offsets (empty,
+  single, three sessions), `PlaybackRequestedEvent` (no sessions,
+  single session with/without audio, multi-session offset
+  accumulation). All green.
 - ⏳ Widget tests — inject `AudioPlayer`, test UI state transitions
   with `fake_async` and `mocktail`. Prerequisite: Step 0.
 - ⏳ Manual protocol — screen lock checklist on real devices.
   Prerequisite: ADR-001 implementation complete (Step 11).
 
 **Reference**: `docs/architecture/concepts/test-strategy.md`
+
+**New files added this session**:
+
+- `lib/timer_event.dart` — abstract base class (`offsetMs`)
+- `lib/exercise_finished_event.dart` — extends `TimerEvent`
+- `lib/playback_requested_event.dart` — extends `TimerEvent` (`offsetMs`, `audioFile`)
+- `lib/timer_schedule.dart` — pure calculation class, `buildEvents()` returns `List<TimerEvent>`
+- `test/unit/timer_schedule_test.dart` — unit tests for `TimerSchedule`
+- `test/objective_c_test.dart` — retained (reminder to upgrade `objective_c` dep when fixed upstream)
 
 ### TestFlight Deployment ✅ (Completed)
 
