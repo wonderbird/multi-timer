@@ -5,4 +5,3 @@ class SessionData {
 
   SessionData(this.durationMs, [this.audioFile, this.audioDurationMs = 0]);
 }
-
