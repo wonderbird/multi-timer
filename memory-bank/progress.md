@@ -53,10 +53,11 @@
 
 **Implementation Steps**:
 
-0. 🚧 Extract `TimerSchedule` — nearly complete. Two items remain
+0. 🚧 Extract `TimerSchedule` — nearly complete. One item remains
    (see activeContext.md): (0a) wire `_runExerciseSequence()` to
-   `TimerSchedule.buildEvents()`; (0b) rename `SessionData.durationSeconds`
-   → `durationMs` and remove `~/ 1000` workarounds
+   `TimerSchedule.buildEvents()`. Step 0b done: `SessionData.durationMs`
+   is now the backing field; `SessionData` and constants extracted to
+   own files (`session_data.dart`, `constants.dart`)
 1. ⏳ Foundation Setup - Add dependencies and configuration
 2. ⏳ Permission Flow - Request notification permissions
 3. ⏳ Single Notification Proof - Validate notifications fire while locked
@@ -91,12 +92,14 @@
 
 **Reference**: `docs/architecture/concepts/test-strategy.md`
 
-**New files added this session**:
+**Files added/extracted**:
 
 - `lib/timer_event.dart` — abstract base class (`offsetMs`)
 - `lib/exercise_finished_event.dart` — extends `TimerEvent`
 - `lib/playback_requested_event.dart` — extends `TimerEvent` (`offsetMs`, `audioFile`)
 - `lib/timer_schedule.dart` — pure calculation class, `buildEvents()` returns `List<TimerEvent>`
+- `lib/session_data.dart` — `SessionData` extracted from `main.dart`
+- `lib/constants.dart` — `kGongDurationMs`, `kGongAudioFile` extracted from `main.dart`
 - `test/unit/timer_schedule_test.dart` — unit tests for `TimerSchedule`
 - `test/objective_c_test.dart` — retained (reminder to upgrade `objective_c` dep when fixed upstream)
 
@@ -134,7 +137,7 @@ TestFlight deployment completed. App is live in TestFlight with 2 beta testers i
 
 **Last Completed**: Audio volume increased (v1.0.0+2); deployed to TestFlight Jan 17, 2026
 
-**Next Immediate Task**: Step 1 - Foundation Setup (add notification dependencies for screen lock fix)
+**Next Immediate Task**: Step 0a — wire `_runExerciseSequence()` to `TimerSchedule.buildEvents()`, then Step 1 (add notification dependencies)
 
 **Version Tracking**:
 - Git tag v4 marks source code for TestFlight build 1.0.0+1

@@ -27,18 +27,16 @@ No complex state management needed for this single-flow application.
 ### Session Data Model
 
 ```dart
+// lib/session_data.dart
 class SessionData {
-  final int durationSeconds;                    // Total session duration (seconds)
-  int get durationMs => durationSeconds * 1000; // Convenience getter — use this in new code
-  final String? audioFile;                      // Optional instruction audio
-  final int audioDurationMs;                    // Audio file length
+  final int durationMs;        // Total session duration (milliseconds)
+  final String? audioFile;     // Optional instruction audio
+  final int audioDurationMs;   // Audio file length
 }
 ```
 
-Sessions defined as compile-time constants, different for debug vs. release builds.
-
-**Pending cleanup (Step 0b)**: rename `durationSeconds` → `durationMs`,
-remove the getter, update all `SessionData(...)` construction sites.
+Sessions defined as compile-time constants in `main.dart`, different for debug vs. release builds.
+All `SessionData(...)` call sites pass milliseconds directly.
 
 ## Audio Playback Pattern
 
@@ -174,6 +172,9 @@ TimerEvent (abstract, lib/timer_event.dart)
   └── PlaybackRequestedEvent (lib/playback_requested_event.dart)
         offsetMs: when to play (ms from exercise start)
         audioFile: path to audio asset
+
+lib/session_data.dart  — SessionData (extracted from main.dart)
+lib/constants.dart     — kGongDurationMs, kGongAudioFile (extracted from main.dart)
 ```
 
 `TimerSchedule(List<SessionData>).buildEvents()` returns

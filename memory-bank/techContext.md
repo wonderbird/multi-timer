@@ -77,7 +77,13 @@ multi-timer/
   ├── ios/                        # iOS platform code
   │   └── Runner.xcodeproj/
   ├── lib/
-  │   └── main.dart              # Single-file application
+  │   ├── main.dart              # App entry point, TimerScreen, session definitions
+  │   ├── constants.dart         # kGongDurationMs, kGongAudioFile
+  │   ├── session_data.dart      # SessionData model
+  │   ├── timer_schedule.dart    # Pure timing calculation
+  │   ├── timer_event.dart       # Abstract base event
+  │   ├── exercise_finished_event.dart
+  │   └── playback_requested_event.dart
   ├── pubspec.yaml               # Dependencies and assets
   └── README.md
 ```

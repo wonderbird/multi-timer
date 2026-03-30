@@ -21,13 +21,17 @@ Extracting timing logic from `_TimerScreenState` into a pure Dart class. TDD app
   stateless helpers: `produceOptionalSessionStartPlaybackEvent` →
   `List<PlaybackRequestedEvent>`, `produceSessionEndPlaybackEvent` and
   `produceExerciseFinishedEvent` → single events
-- ✅ `SessionData.durationMs` getter (`durationSeconds * 1000`) — all new code uses this
-- ✅ `kGongAudioFile` constant in `main.dart`
+- ✅ `lib/session_data.dart` — `SessionData` extracted from `main.dart`
+- ✅ `lib/constants.dart` — `kGongDurationMs` and `kGongAudioFile` extracted from `main.dart`
+- ✅ `SessionData.durationMs` is now the backing field (was `durationSeconds`);
+  getter removed; all `SessionData(...)` call sites pass milliseconds;
+  `~/ 1000` workarounds removed from tests
 - ✅ `test/unit/timer_schedule_test.dart` — full suite, all green:
   - `ExerciseFinishedEvent` offsets: empty, single, three sessions
   - `PlaybackRequestedEvent`: no sessions, single with audio, single without audio,
     two sessions (instruction offset, gong offset)
 - ✅ Renamed `_startTimer()` → `_runExerciseSequence()` in `main.dart`
+- ✅ `dart format` applied
 
 ### Up next: Notification-based background timing
 
@@ -164,29 +168,13 @@ The code subtracts audio and gong durations from total session time to achieve p
 
 ## Next Immediate Steps
 
-**Step 0a — Wire `_runExerciseSequence()` to `TimerSchedule`:**
+**Step 0a — Wire `_runExerciseSequence()` to `TimerSchedule` (only remaining Step 0 item):**
 
-Replace the inline timing loop in `_runExerciseSequence()` (lines
-131–147 of `main.dart`) with a call to
-`TimerSchedule(sessions).buildEvents()`. The loop currently calculates
-delays manually using `Future.delayed()`. After this change it drives
-execution by iterating the event list — still via `Future.delayed()`.
-The switch to OS notifications comes in Step 8.
-
-**Step 0b — Rename `SessionData.durationSeconds` to `durationMs`:**
-
-The backing field is still named `durationSeconds`. New code uses the
-`durationMs` getter, but the constructor and all `SessionData(...)`
-call sites in `main.dart` still pass seconds. Tests compensate with
-`~/ 1000` at construction sites. Fix:
-
-1. Rename field `durationSeconds` → `durationMs` in `SessionData`
-2. Remove the `durationMs` getter (now redundant)
-3. Update all `SessionData(...)` call sites in `main.dart` to pass
-   milliseconds
-4. Remove `~/ 1000` from test construction sites
-
-Do Step 0b before Step 1 to keep the codebase clean.
+Replace the inline timing loop in `_runExerciseSequence()` with a call
+to `TimerSchedule(sessions).buildEvents()`. The loop currently
+calculates delays manually using `Future.delayed()`. After this change
+it drives execution by iterating the event list — still via
+`Future.delayed()`. The switch to OS notifications comes in Step 8.
 
 **Step 1: Foundation Setup** (after Step 0)
 
