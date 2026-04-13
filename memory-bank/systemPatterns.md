@@ -57,42 +57,57 @@ dependency mandatory and visible at every call site.
 class SessionData {
   final int durationMs;        // Total session duration (milliseconds)
   final String? audioFile;     // Optional instruction audio
-  final int audioDurationMs;   // Audio file length
 }
 ```
 
-Sessions defined as compile-time constants in `main.dart`, different for
-debug vs. release builds.
-All `SessionData(...)` call sites pass milliseconds directly.
+Sessions defined as compile-time constants in `timer_screen.dart`, different
+for debug vs. release builds. `audioDurationMs` was removed when the
+fire-and-forget `_play` pattern was introduced — the loop no longer needs
+to subtract audio duration from the delay.
 
 ## Audio Playback Pattern
 
-### Playback-and-Wait Helper
+### Play Helper
 
 ```dart
-Future<void> _playAudioAndWait(String audioPath) async
+Future<void> _play(String audioPath) async
 ```
 
-Critical implementation details:
+Responsibilities:
 
 1. **Stop previous playback**: Ensures clean state
-2. **Setup listener BEFORE playing**: Avoids race condition
-3. **Use Completer pattern**: Converts event callback to Future
-4. **Cleanup subscription**: Prevents memory leaks
+2. **Start new playback**: Fire-and-forget — does not wait for completion
 
-This pattern emerged after fixing "some audios not played" issue (commit faed597).
+`_runExerciseSequence` is the director of all timing. `_play` is a thin
+wrapper that stops and starts the player. Waiting (for audio duration or
+silence) is handled by `Future.delayed` in the calling loop.
+
+**Design decision**: fire-and-forget over stream-based completion. The
+original `_playAudioAndWait` waited for `onPlayerComplete` via a
+`Completer`. Removed because audio durations are known constants and the
+stream dependency made widget tests require `StreamController` stubs.
+The trade-off (millisecond-level drift if `play()` has a driver delay)
+is acceptable for a breathing exercise app.
 
 ### Audio Timing Coordination
 
 Sessions execute sequentially:
 
 ```text
-Session Start → [Optional Audio] → [Silent Delay] → [Gong] → Next Session
+Session Start
+  → _play(instructionAudio)
+  → Future.delayed(durationMs − kGongDurationMs)
+  → _play(gong)
+  → Future.delayed(kGongDurationMs)
+  → Next Session
 ```
 
-Total session time = instruction audio + silent delay + gong duration
+The pre-gong delay covers both instruction audio playback and the silent
+practice period. Instruction audio plays in the background during this
+delay — no sequential wait required.
 
-The code precisely subtracts audio durations to maintain accurate overall timing.
+Total session time =
+`(durationMs − kGongDurationMs) + kGongDurationMs` = `durationMs` ✓
 
 ## Timer Execution Pattern
 

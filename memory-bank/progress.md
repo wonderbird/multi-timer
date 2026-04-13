@@ -60,8 +60,12 @@
 3. ✅ Make `AudioPlayer` injectable — constructor injection on
    `TimerScreen`; extracted to `lib/timer_screen.dart`; widget test
    infrastructure in place
+3b. ✅ Simplify audio playback — `_play` helper (fire-and-forget),
+    removed `_playAudioAndWait` and `audioDurationMs`; `kGongDurationMs`
+    corrected to 5670ms; unit tests updated; debug run verified
 4. ⏳ Write widget tests for `_runExerciseSequence()` — infrastructure
-   ready (`mocktail`, `fake_async`, `MockAudioPlayer`)
+   ready (`mocktail`, `fake_async`, `MockAudioPlayer`); simpler than
+   planned (no `StreamController` needed)
 5. ⏳ Wire `_runExerciseSequence()` to `TimerSchedule.buildEvents()`
 6. ⏳ Foundation Setup — add `flutter_local_notifications`, `timezone`,
    platform config

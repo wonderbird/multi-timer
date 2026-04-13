@@ -10,21 +10,27 @@ automatic display sleep enabled.
 
 ## Current Focus
 
-### Step 3: Make `AudioPlayer` injectable ✅ Complete
+### Audio Playback Simplification ✅ Complete
 
-Constructor injection on `TimerScreen` (StatefulWidget). Completed this session.
+Simplified audio playback from stream-based `_playAudioAndWait` to
+fire-and-forget `_play`. Completed this session.
 
 **Completed this session:**
 
-- ✅ `TimerScreen` accepts non-nullable `AudioPlayer` as positional constructor param
-- ✅ `_TimerScreenState` accesses it via getter `AudioPlayer get _player => widget._player`
-- ✅ `MultiTimerApp.build` passes real `AudioPlayer()` to `TimerScreen`
-- ✅ `TimerScreen` + `_TimerScreenState` extracted from `main.dart` → `lib/timer_screen.dart`
-- ✅ `test/widget/timer_screen_test.dart` created — `MockAudioPlayer` via `mocktail`,
-  `dispose()` stubbed, widget test green
-- ✅ `mocktail: ^1.0.5` and `fake_async: ^1.3.3` added to dev_dependencies
-- ✅ Test strategy doc updated to reflect non-nullable injection pattern
-- ✅ Committed: `refactor: TimerScreen allows mocking AudioPlayer for testing`
+- ✅ `_play(String audioPath)` helper: stop + play, no waiting for completion
+- ✅ `_playAudioAndWait` removed (eliminated `Completer`, `StreamController`,
+  subscription boilerplate)
+- ✅ `audioDurationMs` removed from `SessionData` (no longer needed)
+- ✅ Loop in `_runExerciseSequence` rewritten: `_play(instruction)` →
+  `Future.delayed(durationMs − kGongDurationMs)` → `_play(gong)` →
+  `Future.delayed(kGongDurationMs)`
+- ✅ `kGongDurationMs` corrected to `5670`
+- ✅ Unit tests updated (removed 3rd `SessionData` constructor arg)
+- ✅ All tests green, 2-minute debug run verified
+
+**Design rationale**: `_runExerciseSequence` is the timing director.
+`_play` is a thin wrapper. Instruction audio plays in the background
+during the pre-gong `Future.delayed` — total session time is unchanged.
 
 ### Up next: Notification-based background timing
 
@@ -170,16 +176,28 @@ precise timing.
 
 **Step 4 — Write widget tests for `_runExerciseSequence()`:**
 
-Write widget tests against the *current* inline loop using `fake_async`
-and `MockAudioPlayer`. Tests must go green before proceeding to Step 5.
-Infrastructure already in place: `mocktail`, `fake_async`, `MockAudioPlayer`,
+Write widget tests against the current loop using `fake_async` and
+`MockAudioPlayer`. Tests must go green before proceeding to Step 5.
+Infrastructure in place: `mocktail`, `fake_async`, `MockAudioPlayer`,
 `test/widget/timer_screen_test.dart`.
 
-Scenarios to cover (from test strategy):
+**Stubs needed** (simpler than originally planned — no stream required):
+
+```dart
+when(() => player.stop()).thenAnswer((_) async {});
+when(() => player.play(any())).thenAnswer((_) async {});
+when(() => player.dispose()).thenAnswer((_) async {});
+registerFallbackValue(AssetSource(''));
+```
+
+Scenarios to cover:
 
 - Initial state: `AppBar` + "Start" button visible
 - Counting state: black `Scaffold`, no `AppBar`, progress bar visible
 - After completion: returns to initial state
+
+Time control: `tester.pump(duration)` advances the fake clock for
+`Future.delayed` and `Timer.periodic`. No stream emission required.
 
 **Step 5 — Wire `_runExerciseSequence()` to `TimerSchedule`:**
 
