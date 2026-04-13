@@ -179,9 +179,11 @@ Three-layer strategy accepted (ADR-002):
 
 - **Unit tests** — `test/unit/timer_schedule_test.dart` — complete.
   Run with: `flutter test test/unit/`
-- **Widget tests** — `test/widget/timer_screen_test.dart` — started.
-  `MockAudioPlayer` (mocktail), `fake_async` in place. Initial render
-  test green. Full `_runExerciseSequence()` tests are Step 4.
+- **Widget tests** — `test/widget/timer_screen_test.dart` — in progress.
+  `MockAudioPlayer` (mocktail), `fake_async` in place. First test green:
+  verifies instruction audio on Start tap. Gong + completion scenarios pending.
+  Key patterns: `setUpAll` for `registerFallbackValue`, `captureAny()` +
+  `isA<AssetSource>().having(...)`, drain with `pump(Duration(seconds: 140))`.
   Run with: `flutter test test/widget/`
 - **Integration test** — `test/objective_c_test.dart` — checks
   whether `objective_c` package pin can be removed. Run with:

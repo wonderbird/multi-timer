@@ -63,9 +63,8 @@
 3b. ✅ Simplify audio playback — `_play` helper (fire-and-forget),
     removed `_playAudioAndWait` and `audioDurationMs`; `kGongDurationMs`
     corrected to 5670ms; unit tests updated; debug run verified
-4. ⏳ Write widget tests for `_runExerciseSequence()` — infrastructure
-   ready (`mocktail`, `fake_async`, `MockAudioPlayer`); simpler than
-   planned (no `StreamController` needed)
+4. 🚧 Write widget tests for `_runExerciseSequence()` — first test green
+   (instruction audio on Start tap); gong + idle-return scenarios pending
 5. ⏳ Wire `_runExerciseSequence()` to `TimerSchedule.buildEvents()`
 6. ⏳ Foundation Setup — add `flutter_local_notifications`, `timezone`,
    platform config
@@ -80,7 +79,7 @@
 15. ⏳ Cleanup & Edge Cases — cancellation and notification management
 16. ⏳ End-to-End Validation — real-world testing
 
-**Status**: Steps 1-3 complete; Step 4 next (see activeContext.md)
+**Status**: Steps 1-3 complete; Step 4 in progress (see activeContext.md)
 
 **Next TestFlight Release**: Version 1.1.0 with screen lock fix
 
@@ -92,9 +91,9 @@
 
 - ✅ Unit tests — `test/unit/timer_schedule_test.dart` complete for
   `TimerSchedule`. All green.
-- 🚧 Widget tests — `test/widget/timer_screen_test.dart` created.
-  `MockAudioPlayer` via `mocktail`, `dispose()` stubbed. Initial
-  render test green. Full `_runExerciseSequence()` tests pending (Step 4).
+- 🚧 Widget tests — `test/widget/timer_screen_test.dart`. First test green:
+  verifies first instruction audio plays on Start tap (`captureAny()` +
+  `isA<AssetSource>().having(...)`). Gong + idle-return scenarios pending.
 - ⏳ Manual protocol — screen lock checklist on real devices.
   Prerequisite: ADR-001 implementation complete (Step 11).
 

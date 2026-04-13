@@ -10,29 +10,28 @@ automatic display sleep enabled.
 
 ## Current Focus
 
-### Audio Playback Simplification ✅ Complete
+### Widget Tests for `_runExerciseSequence()` 🚧 In Progress (Step 4)
 
-Simplified audio playback from stream-based `_playAudioAndWait` to
-fire-and-forget `_play`. Completed this session.
+First widget test written, committed, and green. Remaining checkpoint
+tests still pending.
 
 **Completed this session:**
 
-- ✅ `_play(String audioPath)` helper: stop + play, no waiting for completion
-- ✅ `_playAudioAndWait` removed (eliminated `Completer`, `StreamController`,
-  subscription boilerplate)
-- ✅ `audioDurationMs` removed from `SessionData` (no longer needed)
-- ✅ Loop in `_runExerciseSequence` rewritten: `_play(instruction)` →
-  `Future.delayed(durationMs − kGongDurationMs)` → `_play(gong)` →
-  `Future.delayed(kGongDurationMs)`
-- ✅ `kGongDurationMs` corrected to `5670`
-- ✅ Unit tests updated (removed 3rd `SessionData` constructor arg)
-- ✅ All tests green, 2-minute debug run verified
+- ✅ Deleted redundant smoke test (`'TimerScreen is rendered'`) — the new
+  test implies it
+- ✅ `setUpAll` with `registerFallbackValue(AssetSource(''))` — required
+  before any `when(...any()...)` on `Source` parameters
+- ✅ First test: verifies first instruction audio plays on Start tap
+  - Uses `captureAny()` + `isA<AssetSource>().having(...)` to assert path
+  - Drains pending timers with `tester.pump(Duration(seconds: 140))` +
+    `tester.pump()` at end of test
 
-**Design rationale**: `_runExerciseSequence` is the timing director.
-`_play` is a thin wrapper. Instruction audio plays in the background
-during the pre-gong `Future.delayed` — total session time is unchanged.
+**Remaining scenarios for Step 4:**
 
-### Up next: Notification-based background timing
+- After first session delay: gong played (2 total play calls)
+- After full sequence: returns to idle state
+
+### Up next after Step 4: Notification-based background timing
 
 Replacing `Future.delayed()` timer approach with OS-native scheduled
 notifications to maintain accurate timing when screen locks.
@@ -174,30 +173,35 @@ precise timing.
 
 ## Next Immediate Steps
 
-**Step 4 — Write widget tests for `_runExerciseSequence()`:**
+**Step 4 — Complete remaining widget tests for `_runExerciseSequence()`:**
 
-Write widget tests against the current loop using `fake_async` and
-`MockAudioPlayer`. Tests must go green before proceeding to Step 5.
-Infrastructure in place: `mocktail`, `fake_async`, `MockAudioPlayer`,
-`test/widget/timer_screen_test.dart`.
+Infrastructure established. Stub pattern and timer-draining pattern are
+proven. Two more scenarios remain:
 
-**Stubs needed** (simpler than originally planned — no stream required):
+### Scenario: gong plays after first session delay
 
 ```dart
-when(() => player.stop()).thenAnswer((_) async {});
-when(() => player.play(any())).thenAnswer((_) async {});
-when(() => player.dispose()).thenAnswer((_) async {});
-registerFallbackValue(AssetSource(''));
+await tester.tap(find.text('Start'));
+await tester.pump();                                  // instruction plays
+await tester.pump(const Duration(milliseconds: 14330)); // gong plays
+// verify: player.play called twice
+// captured[0].path == 'release/ganzkoerperatmung.mp3'
+// captured[1].path == 'gong.mp3'
+// drain: pump(Duration(seconds: 140 - 14)) + pump()
 ```
 
-Scenarios to cover:
+### Scenario: returns to idle after full sequence
 
-- Initial state: `AppBar` + "Start" button visible
-- Counting state: black `Scaffold`, no `AppBar`, progress bar visible
-- After completion: returns to initial state
+```dart
+await tester.tap(find.text('Start'));
+await tester.pump();
+await tester.pump(const Duration(seconds: 140));
+await tester.pump(); // process final setState
+expect(find.text('Start'), findsOneWidget);
+expect(find.byType(AppBar), findsOneWidget);
+```
 
-Time control: `tester.pump(duration)` advances the fake clock for
-`Future.delayed` and `Timer.periodic`. No stream emission required.
+`kGongAudioFile` path is `'gong.mp3'` (see `lib/constants.dart`).
 
 **Step 5 — Wire `_runExerciseSequence()` to `TimerSchedule`:**
 

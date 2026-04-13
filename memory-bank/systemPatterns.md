@@ -240,6 +240,61 @@ the call site can use `addAll` — cleaner than a null check + `add`.
 **Equatable** is used for value equality on all event classes.
 Pattern-match on event type using Dart 3 `switch` expressions.
 
+## Widget Test Patterns
+
+### Stub Setup
+
+```dart
+setUpAll(() {
+  registerFallbackValue(AssetSource('')); // required for any() on Source params
+});
+
+// Per-test stubs:
+when(() => player.stop()).thenAnswer((_) async {});
+when(() => player.play(any())).thenAnswer((_) async {});
+when(() => player.dispose()).thenAnswer((_) async {});
+```
+
+`registerFallbackValue` must be in `setUpAll`, not inside the test body —
+`when(...any()...)` is evaluated before the test body runs.
+
+### Asserting Audio Calls
+
+`AssetSource` does not implement `==`/`hashCode`. Use `captureAny()` to
+capture the argument, then assert on `.path`:
+
+```dart
+final captured = verify(() => player.play(captureAny())).captured;
+expect(captured.length, equals(1));
+expect(
+  captured.first,
+  isA<AssetSource>().having((a) => a.path, 'path', 'release/ganzkoerperatmung.mp3'),
+);
+```
+
+### Timing in Widget Tests
+
+`testWidgets` wraps tests in Flutter's fake-async. `tester.pump(duration)`
+advances both `Timer.periodic` and `Future.delayed` without wall-clock wait.
+
+#### After tap, before first delay fires
+
+```dart
+await tester.tap(find.text('Start'));
+await tester.pump(); // zero-duration: runs sync setState + instant _play calls
+// sequence is now suspended at Future.delayed(14330ms)
+```
+
+#### Draining pending timers at end of test (mandatory)
+
+```dart
+await tester.pump(const Duration(seconds: 140)); // 7 sessions × 20s
+await tester.pump(); // process final setState(_isCounting = false)
+```
+
+Failing to drain leaves pending timers → test fails with
+`'!timersPending'` assertion.
+
 ## Component Relationships
 
 ```text
