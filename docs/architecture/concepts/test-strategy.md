@@ -206,22 +206,21 @@ Flutter UI state — which screen is rendered under which conditions.
 injectable so tests can supply a fake:
 
 ```dart
-class _TimerScreenState extends State<TimerScreen> {
-  late final AudioPlayer _player;
-
-  @override
-  void initState() {
-    super.initState();
-    _player = widget.audioPlayer ?? AudioPlayer();
-  }
+class TimerScreen extends StatefulWidget {
+  final AudioPlayer _player;
+  const TimerScreen(this._player, {super.key});
+  ...
 }
 
-class TimerScreen extends StatefulWidget {
-  final AudioPlayer? audioPlayer; // nullable; real app passes null
-  const TimerScreen({super.key, this.audioPlayer});
+class _TimerScreenState extends State<TimerScreen> {
+  AudioPlayer get _player => widget._player;
   ...
 }
 ```
+
+**Design decision**: non-nullable over nullable with `?? AudioPlayer()` fallback.
+Rationale: makes the dependency visible and mandatory at every call site;
+eliminates the hidden fallback path and the need for null checks.
 
 ### Faking time with `fake_async`
 
@@ -239,8 +238,10 @@ class MockAudioPlayer extends Mock implements AudioPlayer {}
 
 void main() {
   testWidgets('shows Start button initially', (tester) async {
+    final mock = MockAudioPlayer();
+    when(() => mock.dispose()).thenAnswer((_) async {});
     await tester.pumpWidget(
-      MaterialApp(home: TimerScreen(audioPlayer: MockAudioPlayer())),
+      MaterialApp(home: TimerScreen(mock)),
     );
     expect(find.text('Start'), findsOneWidget);
     expect(find.byType(AppBar), findsOneWidget);
@@ -254,8 +255,9 @@ void main() {
         mock.onPlayerComplete.add(null);
       });
       when(() => mock.stop()).thenAnswer((_) async {});
+      when(() => mock.dispose()).thenAnswer((_) async {});
 
-      tester.pumpWidget(MaterialApp(home: TimerScreen(audioPlayer: mock)));
+      tester.pumpWidget(MaterialApp(home: TimerScreen(mock)));
       tester.tap(find.text('Start'));
       async.elapse(Duration.zero); // flush microtasks
       tester.pump();
@@ -283,8 +285,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   test: ^1.29.0           # already present
-  fake_async: ^1.3.2      # ADD: controls Timer / Future.delayed in tests
-  mocktail: ^1.0.4        # ADD: mock AudioPlayer without code generation
+  fake_async: ^1.3.3      # ADD: controls Timer / Future.delayed in tests
+  mocktail: ^1.0.5        # ADD: mock AudioPlayer without code generation
 ```
 
 Use **`mocktail`** rather than `mockito`. `mocktail` does not require the
